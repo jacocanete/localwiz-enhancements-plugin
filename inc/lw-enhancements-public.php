@@ -22,7 +22,7 @@ class LW_Enhancements_Public
     // Register the block
     function lw_enhancements_block_init()
     {
-        register_block_type(CF_PLUGIN_DIR . '/build/backlink');
+        register_block_type(CF_PLUGIN_DIR . '/build/backlinks-explorer');
         register_block_type(CF_PLUGIN_DIR . '/build/citation-finder');
     }
 }

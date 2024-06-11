@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/backlink/edit.js":
-/*!******************************!*\
-  !*** ./src/backlink/edit.js ***!
-  \******************************/
+/***/ "./src/backlinks-explorer/edit.js":
+/*!****************************************!*\
+  !*** ./src/backlinks-explorer/edit.js ***!
+  \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -18,7 +18,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
 /* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/backlink/editor.scss");
+/* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.scss */ "./src/backlinks-explorer/editor.scss");
 
 /**
  * Retrieves the translation of text.
@@ -62,18 +62,18 @@ function Edit() {
 
 /***/ }),
 
-/***/ "./src/backlink/index.js":
-/*!*******************************!*\
-  !*** ./src/backlink/index.js ***!
-  \*******************************/
+/***/ "./src/backlinks-explorer/index.js":
+/*!*****************************************!*\
+  !*** ./src/backlinks-explorer/index.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/backlink/style.scss");
-/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/backlink/edit.js");
-/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/backlink/block.json");
+/* harmony import */ var _style_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.scss */ "./src/backlinks-explorer/style.scss");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./edit */ "./src/backlinks-explorer/edit.js");
+/* harmony import */ var _block_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block.json */ "./src/backlinks-explorer/block.json");
 /**
  * Registers a new block provided a unique name and an object defining its behavior.
  *
@@ -110,10 +110,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/backlink/editor.scss":
-/*!**********************************!*\
-  !*** ./src/backlink/editor.scss ***!
-  \**********************************/
+/***/ "./src/backlinks-explorer/editor.scss":
+/*!********************************************!*\
+  !*** ./src/backlinks-explorer/editor.scss ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -122,10 +122,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/backlink/style.scss":
-/*!*********************************!*\
-  !*** ./src/backlink/style.scss ***!
-  \*********************************/
+/***/ "./src/backlinks-explorer/style.scss":
+/*!*******************************************!*\
+  !*** ./src/backlinks-explorer/style.scss ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -174,10 +174,10 @@ module.exports = window["wp"]["i18n"];
 
 /***/ }),
 
-/***/ "./src/backlink/block.json":
-/*!*********************************!*\
-  !*** ./src/backlink/block.json ***!
-  \*********************************/
+/***/ "./src/backlinks-explorer/block.json":
+/*!*******************************************!*\
+  !*** ./src/backlinks-explorer/block.json ***!
+  \*******************************************/
 /***/ ((module) => {
 
 module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/backlink","version":"0.1.0","title":"Backlink Explorer","category":"widgets","icon":"admin-links","description":"Backlink Explorer block for finding backlinks from a given [blank].","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
@@ -294,8 +294,8 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"backlink/index": 0,
-/******/ 			"backlink/style-index": 0
+/******/ 			"backlinks-explorer/index": 0,
+/******/ 			"backlinks-explorer/style-index": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -345,7 +345,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/tru
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["backlink/style-index"], () => (__webpack_require__("./src/backlink/index.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["backlinks-explorer/style-index"], () => (__webpack_require__("./src/backlinks-explorer/index.js")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

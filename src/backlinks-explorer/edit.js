@@ -30,9 +30,13 @@ import "./editor.scss";
  * @return {Element} Element to render.
  */
 export default function Edit() {
+	const blockProps = useBlockProps();
+
 	return (
-		<p {...useBlockProps()}>
-			{__("2nd block – hello from the editor!", "lw-enhancements")}
-		</p>
+		<div {...blockProps}>
+			<div className="cf-edit-block">
+				<h3>Backlinks Explorer Block</h3>
+			</div>
+		</div>
 	);
 }

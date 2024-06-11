@@ -6,6 +6,10 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-lw-enhancements-lw-enhancements {
-  border: 1px dotted #f00;
+.cf-edit-block {
+  padding: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 5px;
+  background-color: #d6d6d6;
+  text-align: center;
 }

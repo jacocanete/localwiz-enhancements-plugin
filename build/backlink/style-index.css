@@ -7,10 +7,8 @@
  *
  * Replace them with your own styles or remove the file completely.
  */
-.wp-block-lw-enhancements-lw-enhancements {
-  background-color: #21759b;
-  color: #fff;
-  padding: 2px;
+.wp-block-post-title {
+  margin-top: 5rem !important;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

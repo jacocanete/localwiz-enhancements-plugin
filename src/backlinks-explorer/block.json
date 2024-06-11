@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Backlink Explorer",
 	"category": "widgets",
-	"icon": "links",
+	"icon": "admin-links",
 	"description": "Backlink Explorer block for finding backlinks from a given [blank].",
 	"example": {},
 	"supports": {
