@@ -28,11 +28,13 @@ function CitationFinder() {
 			setResults(null);
 			setError(null);
 			setLoading(true);
+
 			if (!keyword || keyword === "") {
 				setError("Please enter a keyword");
 				setLoading(false);
 				return;
 			}
+
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/citation-finder?kw=${keyword}`,
 			);
@@ -49,6 +51,17 @@ function CitationFinder() {
 				urls.unshift([formData.keyword]);
 
 				let csv = Papa.unparse(urls);
+
+				let csvData = {
+					keyword: keyword,
+					csv: csv,
+				};
+
+				let csvDataString = JSON.stringify(csvData);
+
+				console.log(csvDataString);
+
+				localStorage.setItem("csvData", csvDataString);
 
 				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 

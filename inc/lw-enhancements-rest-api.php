@@ -39,7 +39,7 @@ class LW_Enhancements_REST_API
         // Check if the user wants to use credits or not
         $useCredits = false;
 
-        if (get_option('citation-finder-use-credits') == '1') {
+        if (get_option('lw-enhancements-use-credits') == '1') {
             $useCredits = true;
         } else {
             $useCredits = false;
