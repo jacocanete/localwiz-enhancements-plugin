@@ -180,7 +180,7 @@ module.exports = window["wp"]["i18n"];
   \****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/citation-finder","version":"0.1.0","title":"Citation Finder","category":"widgets","icon":"search","description":"Citation Finder block for finding citations from a given keyword.","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/citation-finder","version":"0.2.0","title":"Citation Finder","category":"widgets","icon":"search","description":"Citation Finder block for finding citations from a given keyword.","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 
