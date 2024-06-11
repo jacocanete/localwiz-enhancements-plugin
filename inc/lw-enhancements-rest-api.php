@@ -16,6 +16,15 @@ class LW_Enhancements_REST_API
                 'callback' => array($this, 'citation_finder')
             )
         );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
+            'backlinks-explorer',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'backlinks_explorer')
+            )
+        );
     }
 
     public function citation_finder($keyword)
@@ -60,7 +69,7 @@ class LW_Enhancements_REST_API
                 CURLOPT_CUSTOMREQUEST => "POST",
                 CURLOPT_POSTFIELDS => $postFields,
                 CURLOPT_HTTPHEADER => array(
-                    "Authorization: Basic " . base64_encode(get_option('citation-finder-username') . ":" . get_option('citation-finder-password')),
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
                     "Content-Type: application/json"
                 ),
             )
@@ -74,6 +83,39 @@ class LW_Enhancements_REST_API
         $responseArray = json_decode($response, true);
 
         // Send the response
+        wp_send_json($responseArray);
+    }
+
+    public function backlinks_explorer($target)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => '[
+                {"target":"dataforseo.com", "internal_list_limit":10, "backlinks_status_type":"live", "include_subdomains":true, "include_indirect_links":true}
+            ]',
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        $responseArray = json_decode($response, true);
+
         wp_send_json($responseArray);
     }
 }
