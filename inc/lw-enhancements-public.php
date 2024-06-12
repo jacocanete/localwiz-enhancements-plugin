@@ -25,6 +25,7 @@ class LW_Enhancements_Public
 
         $auth_urls = array(
             'register_url' => esc_url(site_url('/wp-signup.php')),
+            'nonce' => wp_create_nonce('wp_rest')
         );
 
         wp_localize_script('lw-enhancements-backlink-view-script', 'site_url', $site_url);
