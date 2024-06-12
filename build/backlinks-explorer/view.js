@@ -11700,7 +11700,7 @@ function BacklinksExplorer() {
       setError(null);
       setLoading(true);
       if (!formData.target || formData.target === "") {
-        setError("Please enter a target");
+        setError("Please enter a valid URL target");
         setLoading(false);
         return;
       } else if (internalListLimit < 1 || internalListLimit > 1000) {

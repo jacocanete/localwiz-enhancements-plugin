@@ -2,11 +2,6 @@
 
 class LW_Enhancements_Admin
 {
-    public function __construct()
-    {
-        add_action('admin_menu', array($this, 'lw_enhancements_menu'));
-        add_action('admin_init', array($this, 'lw_enhancements_settings'));
-    }
 
     public function lw_enhancements_menu()
     {
@@ -88,7 +83,7 @@ class LW_Enhancements_Admin
     function passwordHTML()
     { ?>
         <input type="password" name="lw-enhancements-password" value="<?php echo get_option('lw-enhancements-password'); ?>" />
-    <?php }
+<?php }
 
     function echo_plugin_version()
     {

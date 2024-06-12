@@ -21,22 +21,20 @@ class LW_Enhancements_Loader
         require_once CF_PLUGIN_DIR . 'inc/lw-enhancements-rest-api.php';
     }
 
-    // private function set_locale(){
-    // }
-
     private function define_admin_hooks()
     {
         $this->admin = new LW_Enhancements_Admin();
         add_action('admin_menu', array($this->admin, 'lw_enhancements_menu'));
         add_action('admin_init', array($this->admin, 'lw_enhancements_settings'));
-        // Add other admin hooks here
     }
 
     private function define_public_hooks()
     {
         $this->public = new LW_Enhancements_Public();
         add_action('init', array($this->public, 'lw_enhancements_block_init'));
-        // add_action('wp_head', array($this->public, 'remove_header_footer_css'));
+        add_action('wp_enqueue_scripts', array($this->public, 'init_block_styles'));
+        add_action('wp_enqueue_scripts', array($this->public, 'init_block_scripts'));
+        add_action('wp_head', array($this->public, 'remove_header_footer_css'));
     }
 
     private function define_rest_api_hooks()

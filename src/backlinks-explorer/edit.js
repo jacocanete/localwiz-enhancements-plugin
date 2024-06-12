@@ -34,7 +34,7 @@ export default function Edit() {
 
 	return (
 		<div {...blockProps}>
-			<div className="cf-edit-block">
+			<div className="be-edit-block">
 				<h3>Backlinks Explorer Block</h3>
 			</div>
 		</div>

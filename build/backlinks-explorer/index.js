@@ -56,7 +56,7 @@ function Edit() {
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "cf-edit-block"
+    className: "be-edit-block"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, "Backlinks Explorer Block")));
 }
 
