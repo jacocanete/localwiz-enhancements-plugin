@@ -121,9 +121,10 @@ function Credits() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "btn btn-dark",
     href: "#"
-  }, "Login"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+  }, "Login"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     className: "btn btn-secondary",
-    href: "#"
+    role: "button",
+    href: `${auth_urls.register_url}`
   }, "Register")))));
 }
 /******/ })()

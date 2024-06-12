@@ -14,17 +14,17 @@
 </div>
 
 <?php
-function print_script_handles()
+// function print_script_handles()
 
-{
+// {
 
-	global $wp_scripts;
+// 	global $wp_scripts;
 
-	foreach ($wp_scripts->queue as $handle) :
+// 	foreach ($wp_scripts->queue as $handle) :
 
-		echo $handle . ', ';
+// 		echo $handle . ', ';
 
-	endforeach;
-}
+// 	endforeach;
+// }
 
-add_action('wp_print_scripts', 'print_script_handles');
+// add_action('wp_print_scripts', 'print_script_handles');

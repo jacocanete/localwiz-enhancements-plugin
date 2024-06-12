@@ -20,9 +20,13 @@ function Credits() {
 						<button className="btn btn-dark" href="#">
 							Login
 						</button>
-						<button className="btn btn-secondary" href="#">
+						<a
+							className="btn btn-secondary"
+							role="button"
+							href={`${auth_urls.register_url}`}
+						>
 							Register
-						</button>
+						</a>
 					</div>
 				</div>
 			</div>
