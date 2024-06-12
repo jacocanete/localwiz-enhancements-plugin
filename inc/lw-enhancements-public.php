@@ -6,7 +6,7 @@ class LW_Enhancements_Public
     {
         register_block_type(CF_PLUGIN_DIR . '/build/backlinks-explorer');
         register_block_type(CF_PLUGIN_DIR . '/build/citation-finder');
-        register_block_type(CF_PLUGIN_DIR . '/build/login-register');
+        register_block_type(CF_PLUGIN_DIR . '/build/credits');
     }
 
     function init_block_styles()
