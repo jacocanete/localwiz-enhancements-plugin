@@ -12,3 +12,19 @@
 		</div>
 	</div>
 </div>
+
+<?php
+function print_script_handles()
+
+{
+
+	global $wp_scripts;
+
+	foreach ($wp_scripts->queue as $handle) :
+
+		echo $handle . ', ';
+
+	endforeach;
+}
+
+add_action('wp_print_scripts', 'print_script_handles');

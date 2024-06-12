@@ -116,12 +116,14 @@ function Credits() {
     className: "row"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "col d-flex justify-content-start align-items-center gap-2"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Credit Balance:")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "Credit Balance: $1000.00")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "col d-flex justify-content-end align-items-center gap-2"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "btn btn-primary"
+    className: "btn btn-dark",
+    href: "#"
   }, "Login"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "btn btn-primary"
+    className: "btn btn-secondary",
+    href: "#"
   }, "Register")))));
 }
 /******/ })()

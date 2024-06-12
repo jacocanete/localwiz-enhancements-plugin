@@ -14,11 +14,15 @@ function Credits() {
 			<div className="p-4 border shadow inner">
 				<div className="row">
 					<div className="col d-flex justify-content-start align-items-center gap-2">
-						<span>Credit Balance:</span>
+						<span>Credit Balance: $1000.00</span>
 					</div>
 					<div className="col d-flex justify-content-end align-items-center gap-2">
-						<button className="btn btn-primary">Login</button>
-						<button className="btn btn-primary">Register</button>
+						<button className="btn btn-dark" href="#">
+							Login
+						</button>
+						<button className="btn btn-secondary" href="#">
+							Register
+						</button>
 					</div>
 				</div>
 			</div>
