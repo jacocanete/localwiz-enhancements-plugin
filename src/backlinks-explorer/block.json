@@ -6,7 +6,7 @@
 	"title": "Backlink Explorer",
 	"category": "widgets",
 	"icon": "admin-links",
-	"description": "Backlink Explorer block for finding backlinks from a given [blank].",
+	"description": "Backlink Explorer block for finding backlinks from a target URL.",
 	"example": {},
 	"supports": {
 		"html": false

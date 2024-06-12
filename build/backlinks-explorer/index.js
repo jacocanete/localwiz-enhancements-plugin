@@ -180,7 +180,7 @@ module.exports = window["wp"]["i18n"];
   \*******************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/backlink","version":"1.0.0","title":"Backlink Explorer","category":"widgets","icon":"admin-links","description":"Backlink Explorer block for finding backlinks from a given [blank].","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/backlink","version":"1.0.0","title":"Backlink Explorer","category":"widgets","icon":"admin-links","description":"Backlink Explorer block for finding backlinks from a target URL.","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 
