@@ -4,7 +4,7 @@ import axios from "axios";
 import Papa from "papaparse";
 import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
-import { testFunction } from "./utils/testFunction";
+import { flattenData } from "./utils/flattenData";
 
 const block = document.querySelectorAll(".backlinks-explorer-update");
 
@@ -206,17 +206,7 @@ function BacklinksExplorer() {
 					Indirect_Link_Path: item.indirect_link_path,
 				}));
 
-				let flatData = csvData.map((item) => {
-					let newItem = {};
-					for (let key in item) {
-						if (typeof item[key] === "object") {
-							newItem[key] = JSON.stringify(item[key]);
-						} else {
-							newItem[key] = item[key];
-						}
-					}
-					return newItem;
-				});
+				let flatData = flattenData(csvData);
 
 				let csv = Papa.unparse(flatData);
 

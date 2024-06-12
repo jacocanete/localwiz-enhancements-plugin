@@ -1,19 +1,29 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/backlinks-explorer/utils/testFunction.js":
-/*!******************************************************!*\
-  !*** ./src/backlinks-explorer/utils/testFunction.js ***!
-  \******************************************************/
+/***/ "./src/backlinks-explorer/utils/flattenData.js":
+/*!*****************************************************!*\
+  !*** ./src/backlinks-explorer/utils/flattenData.js ***!
+  \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   testFunction: () => (/* binding */ testFunction)
+/* harmony export */   flattenData: () => (/* binding */ flattenData)
 /* harmony export */ });
-function testFunction() {
-  console.log("testFunction");
+function flattenData(data) {
+  return data.map(item => {
+    let newItem = {};
+    for (let key in item) {
+      if (typeof item[key] === "object") {
+        newItem[key] = JSON.stringify(item[key]);
+      } else {
+        newItem[key] = item[key];
+      }
+    }
+    return newItem;
+  });
 }
 
 /***/ }),
@@ -11623,7 +11633,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
-/* harmony import */ var _utils_testFunction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/testFunction */ "./src/backlinks-explorer/utils/testFunction.js");
+/* harmony import */ var _utils_flattenData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/flattenData */ "./src/backlinks-explorer/utils/flattenData.js");
 
 
 
@@ -11813,17 +11823,7 @@ function BacklinksExplorer() {
           Is_Indirect_Link: item.is_indirect_link,
           Indirect_Link_Path: item.indirect_link_path
         }));
-        let flatData = csvData.map(item => {
-          let newItem = {};
-          for (let key in item) {
-            if (typeof item[key] === "object") {
-              newItem[key] = JSON.stringify(item[key]);
-            } else {
-              newItem[key] = item[key];
-            }
-          }
-          return newItem;
-        });
+        let flatData = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_3__.flattenData)(csvData);
         let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flatData);
         let csvBlob = new Blob([csv], {
           type: "text/csv;charset=utf-8;"
