@@ -69,8 +69,25 @@ function BacklinksExplorer() {
 			setError(null);
 			setLoading(true);
 
-			if (!formData.target || formData.target === "") {
-				setError("Please enter a valid URL target");
+			const urlPattern = new RegExp(
+				"^(https?:\\/\\/)?" + // protocol
+					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name and extension
+					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+					"(\\:\\d+)?" + // port
+					"(\\/[-a-z\\d%_.~+]*)*" + // path
+					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+					"(\\#[-a-z\\d_]*)?$",
+				"i",
+			); // fragment locator
+
+			if (
+				!formData.target ||
+				formData.target === "" ||
+				!urlPattern.test(formData.target)
+			) {
+				setError(
+					"Invalid input. Please enter a valid URL including the http:// or https:// prefix.",
+				);
 				setLoading(false);
 				return;
 			} else if (internalListLimit < 1 || internalListLimit > 1000) {
@@ -136,6 +153,8 @@ function BacklinksExplorer() {
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
 			);
+
+			console.log(response);
 
 			if (!response.statusText === "OK") {
 				setError("Error fetching data");
