@@ -137,8 +137,6 @@ function BacklinksExplorer() {
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
 			);
 
-			console.log(response.data);
-
 			if (!response.statusText === "OK") {
 				setError("Error fetching data");
 				setLoading(false);
@@ -151,63 +149,16 @@ function BacklinksExplorer() {
 				return;
 			} else {
 				const data = response.data;
-				console.log(data);
 				const items = data.tasks[0].result[0].items;
-				const csvData = items.map((item, index) => ({
-					Target: index === 0 ? formData.target : "",
-					Type: item.type,
-					Domain_From: item.domain_from,
-					URL_From: item.url_from,
-					URL_From_HTTPS: item.url_from_https,
-					Domain_To: item.domain_to,
-					URL_To: item.url_to,
-					URL_To_HTTPS: item.url_to_https,
-					TLD_From: item.tld_from,
-					Is_New: item.is_new,
-					Is_Lost: item.is_lost,
-					Backlink_Spam_Score: item.backlink_spam_score,
-					Rank: item.rank,
-					Page_From_Rank: item.page_from_rank,
-					Domain_From_Rank: item.domain_from_rank,
-					Domain_From_Platform_Type: item.domain_from_platform_type.join(", "),
-					Domain_From_Is_IP: item.domain_from_is_ip,
-					Domain_From_IP: item.domain_from_ip,
-					Domain_From_Country: item.domain_from_country,
-					Page_From_External_Links: item.page_from_external_links,
-					Page_From_Internal_Links: item.page_from_internal_links,
-					Page_From_Size: item.page_from_size,
-					Page_From_Encoding: item.page_from_encoding,
-					Page_From_Language: item.page_from_language,
-					Page_From_Title: item.page_from_title,
-					Page_From_Status_Code: item.page_from_status_code,
-					First_Seen: item.first_seen,
-					Prev_Seen: item.prev_seen,
-					Last_Seen: item.last_seen,
-					Item_Type: item.item_type,
-					Attributes: item.attributes,
-					DoFollow: item.dofollow,
-					Original: item.original,
-					Alt: item.alt,
-					Image_URL: item.image_url,
-					Anchor: item.anchor,
-					Text_Pre: item.text_pre,
-					Text_Post: item.text_post,
-					Semantic_Location: item.semantic_location,
-					Links_Count: item.links_count,
-					Group_Count: item.group_count,
-					Is_Broken: item.is_broken,
-					URL_To_Status_Code: item.url_to_status_code,
-					URL_To_Spam_Score: item.url_to_spam_score,
-					URL_To_Redirect_Target: item.url_to_redirect_target,
-					Page_From_Keywords_Count_Top_3:
-						item.ranked_keywords_info.page_from_keywords_count_top_3,
-					Page_From_Keywords_Count_Top_10:
-						item.ranked_keywords_info.page_from_keywords_count_top_10,
-					Page_From_Keywords_Count_Top_100:
-						item.ranked_keywords_info.page_from_keywords_count_top_100,
-					Is_Indirect_Link: item.is_indirect_link,
-					Indirect_Link_Path: item.indirect_link_path,
-				}));
+				let firstInstance = true;
+				const csvData = items.map((item) => {
+					const newItem = {
+						target: firstInstance ? formData.target : "",
+						...item,
+					};
+					firstInstance = false;
+					return newItem;
+				});
 
 				let flatData = flattenData(csvData);
 
@@ -230,7 +181,6 @@ function BacklinksExplorer() {
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);
-			console.log(e.message);
 			setLoading(false);
 		}
 	}
