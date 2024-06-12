@@ -45,30 +45,20 @@ function CitationFinder() {
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/citation-finder?kw=${keyword}`,
 			);
+
 			if (!response.statusText === "OK") {
-				console.log("Error fetching data");
+				setError("Error fetching data");
+				setLoading(false);
 				return;
 			} else {
 				const data = response.data;
 				const items = data.tasks[0].result[0].items;
-				const urls = items.map((item) => [
-					item.url ? item.url : "No url found",
-				]);
+				const csvData = items.map((item, index) => ({
+					Keyword: index === 0 ? formData.keyword : "",
+					URL: item.url ? item.url : "No url found",
+				}));
 
-				urls.unshift([formData.keyword]);
-
-				let csv = Papa.unparse(urls);
-
-				let csvData = {
-					keyword: keyword,
-					csv: csv,
-				};
-
-				let csvDataString = JSON.stringify(csvData);
-
-				console.log(csvDataString);
-
-				localStorage.setItem("csvData", csvDataString);
+				let csv = Papa.unparse(csvData);
 
 				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
 
@@ -81,7 +71,7 @@ function CitationFinder() {
 
 				setFilename(`${formattedDate} ${formData.keyword}.csv`);
 				setTime(parseFloat(data.time));
-				setItems(urls);
+				setItems(csvData);
 				setResults(csvUrl);
 				setLoading(false);
 			}
@@ -90,6 +80,8 @@ function CitationFinder() {
 			setLoading(false);
 		}
 	}
+
+	console.log(items);
 
 	function handleChange(e) {
 		setFormData({
@@ -104,7 +96,7 @@ function CitationFinder() {
 	}
 
 	return (
-		<div className="container">
+		<div className="container mb-5">
 			<div className="p-4 border shadow inner">
 				<form onSubmit={handleSubmit}>
 					<div className="mb-3">
@@ -180,28 +172,35 @@ function CitationFinder() {
 						</div>
 					</>
 				)}
-				<div className="container collapse" id="urlCollapse">
-					<table className="table mt-3">
-						<thead>
+				<div className="container collapse table-responsive" id="urlCollapse">
+					<table className="table table-striped table-hover mt-3 caption-top">
+						<caption>Download the CSV for a better view.</caption>
+						<thead className="table-dark">
 							<tr>
-								<th>URL</th>
+								{items[0] &&
+									Object.keys(items[0]).map((key, index) => (
+										<th key={index}>{key}</th>
+									))}
 							</tr>
 						</thead>
 						<tbody>
-							{items.map((url, index) => (
+							{items.map((item, index) => (
 								<tr key={index}>
-									<td
-										style={{
-											maxWidth: "0",
-											overflow: "hidden",
-											textOverflow: "ellipsis",
-											whiteSpace: "nowrap",
-										}}
-									>
-										<a href={url} target="_blank" rel="noreferrer">
-											{url}
-										</a>
-									</td>
+									{Object.values(item).map((value, i) => (
+										<td key={i} className="text-truncate">
+											{typeof value === "string" && value.startsWith("http") ? (
+												<a href={value} target="_blank" rel="noreferrer">
+													{value}
+												</a>
+											) : typeof value === "boolean" ? (
+												value.toString()
+											) : typeof value === "object" ? (
+												JSON.stringify(value)
+											) : (
+												value
+											)}
+										</td>
+									))}
 								</tr>
 							))}
 						</tbody>
