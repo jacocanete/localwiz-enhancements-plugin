@@ -77,10 +77,25 @@ class LW_Enhancements_REST_API
 
         // Execute the request
         $response = curl_exec($curl);
+
+        // Check for errors
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
         curl_close($curl);
 
         // Decode the response
         $responseArray = json_decode($response, true);
+
+        // Check if the response is valid JSON
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
 
         // Send the response
         wp_send_json($responseArray);
@@ -112,9 +127,22 @@ class LW_Enhancements_REST_API
         );
 
         $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
         curl_close($curl);
 
         $responseArray = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
 
         wp_send_json($responseArray);
     }
