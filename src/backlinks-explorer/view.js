@@ -18,7 +18,12 @@ function BacklinksExplorer() {
 							<label for="target" class="form-label">
 								Target:
 							</label>
-							<input type="url" class="form-control" id="target" />
+							<input
+								type="url"
+								class="form-control"
+								id="target"
+								placeholder="ex. https://localdominator.co"
+							/>
 						</div>
 					</div>
 					<div className="row mb-3">
@@ -94,6 +99,7 @@ function BacklinksExplorer() {
 								id="target"
 								min="1"
 								max="1000"
+								value="10"
 							/>
 						</div>
 						<div className="col"></div>

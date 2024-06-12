@@ -22,6 +22,13 @@ function CitationFinder() {
 	const [items, setItems] = useState([]);
 	const [time, setTime] = useState(0);
 
+	const tooltipTriggerList = [].slice.call(
+		document.querySelectorAll("#tooltipButton"),
+	);
+	const tooltipList = [...tooltipTriggerList].map(
+		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+	);
+
 	async function getResults(keyword) {
 		try {
 			setViewTable(false);
@@ -139,7 +146,14 @@ function CitationFinder() {
 						<hr />
 						<div className="mt-3 d-flex flex-row justify-content-center align-items-center">
 							<span>{filename}</span>
-							<a href={results} download={filename} className="btn btn-link">
+							<a
+								href={results}
+								download={filename}
+								className="btn btn-link"
+								data-bs-placement="top"
+								data-bs-title="Download CSV"
+								id="tooltipButton"
+							>
 								<FaDownload />
 							</a>
 							<br />
@@ -157,6 +171,9 @@ function CitationFinder() {
 								data-bs-target="#urlCollapse"
 								aria-expanded="false"
 								aria-controls="urlCollapse"
+								data-bs-placement="top"
+								data-bs-title="Preview CSV"
+								id="tooltipButton"
 							>
 								<FaEye />
 							</button>

@@ -122,7 +122,8 @@ function BacklinksExplorer() {
   }, "Target:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "url",
     class: "form-control",
-    id: "target"
+    id: "target",
+    placeholder: "ex. https://localdominator.co"
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "row mb-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -195,7 +196,8 @@ function BacklinksExplorer() {
     class: "form-control",
     id: "target",
     min: "1",
-    max: "1000"
+    max: "1000",
+    value: "10"
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "col"
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

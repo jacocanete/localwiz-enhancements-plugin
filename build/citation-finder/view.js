@@ -11627,6 +11627,8 @@ function CitationFinder() {
   const [viewTable, setViewTable] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [time, setTime] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll("#tooltipButton"));
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   async function getResults(keyword) {
     try {
       setViewTable(false);
@@ -11716,7 +11718,10 @@ function CitationFinder() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, filename), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: results,
     download: filename,
-    className: "btn btn-link"
+    className: "btn btn-link",
+    "data-bs-placement": "top",
+    "data-bs-title": "Download CSV",
+    id: "tooltipButton"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaDownload, null)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "btn btn-link"
     // onClick={(e) => {
@@ -11731,7 +11736,10 @@ function CitationFinder() {
     "data-bs-toggle": "collapse",
     "data-bs-target": "#urlCollapse",
     "aria-expanded": "false",
-    "aria-controls": "urlCollapse"
+    "aria-controls": "urlCollapse",
+    "data-bs-placement": "top",
+    "data-bs-title": "Preview CSV",
+    id: "tooltipButton"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "container collapse",
     id: "urlCollapse"
