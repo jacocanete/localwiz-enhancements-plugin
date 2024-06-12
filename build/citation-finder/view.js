@@ -11718,17 +11718,23 @@ function CitationFinder() {
     download: filename,
     className: "btn btn-link"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaDownload, null)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "btn btn-link",
-    onClick: e => {
-      e.preventDefault();
-      if (viewTable) {
-        setViewTable(false);
-      } else {
-        setViewTable(true);
-      }
-    }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null)))), viewTable && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container"
+    className: "btn btn-link"
+    // onClick={(e) => {
+    // 	e.preventDefault();
+    // 	if (viewTable) {
+    // 		setViewTable(false);
+    // 	} else {
+    // 		setViewTable(true);
+    // 	}
+    // }}
+    ,
+    "data-bs-toggle": "collapse",
+    "data-bs-target": "#urlCollapse",
+    "aria-expanded": "false",
+    "aria-controls": "urlCollapse"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "container collapse",
+    id: "urlCollapse"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
     className: "table mt-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "URL"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((url, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {

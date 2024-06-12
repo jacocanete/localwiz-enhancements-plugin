@@ -145,49 +145,51 @@ function CitationFinder() {
 							<br />
 							<button
 								className="btn btn-link"
-								onClick={(e) => {
-									e.preventDefault();
-									if (viewTable) {
-										setViewTable(false);
-									} else {
-										setViewTable(true);
-									}
-								}}
+								// onClick={(e) => {
+								// 	e.preventDefault();
+								// 	if (viewTable) {
+								// 		setViewTable(false);
+								// 	} else {
+								// 		setViewTable(true);
+								// 	}
+								// }}
+								data-bs-toggle="collapse"
+								data-bs-target="#urlCollapse"
+								aria-expanded="false"
+								aria-controls="urlCollapse"
 							>
 								<FaEye />
 							</button>
 						</div>
 					</>
 				)}
-				{viewTable && (
-					<div className="container">
-						<table className="table mt-3">
-							<thead>
-								<tr>
-									<th>URL</th>
+				<div className="container collapse" id="urlCollapse">
+					<table className="table mt-3">
+						<thead>
+							<tr>
+								<th>URL</th>
+							</tr>
+						</thead>
+						<tbody>
+							{items.map((url, index) => (
+								<tr key={index}>
+									<td
+										style={{
+											maxWidth: "0",
+											overflow: "hidden",
+											textOverflow: "ellipsis",
+											whiteSpace: "nowrap",
+										}}
+									>
+										<a href={url} target="_blank" rel="noreferrer">
+											{url}
+										</a>
+									</td>
 								</tr>
-							</thead>
-							<tbody>
-								{items.map((url, index) => (
-									<tr key={index}>
-										<td
-											style={{
-												maxWidth: "0",
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-												whiteSpace: "nowrap",
-											}}
-										>
-											<a href={url} target="_blank" rel="noreferrer">
-												{url}
-											</a>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				)}
+							))}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	);
