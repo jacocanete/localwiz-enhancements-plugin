@@ -11760,11 +11760,12 @@ function BacklinksExplorer() {
       // http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=dataforseo.com&is=true&iil=true&bst=live&ill=10&m=as_is
 
       const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`);
+      console.log(response.data);
       if (!response.statusText === "OK") {
         setError("Error fetching data");
         setLoading(false);
         return;
-      } else if (response.data.tasks[0].status_code !== 200) {
+      } else if (!response.data.tasks[0].status_message === "OK") {
         setError(`Error fetching data: "${response.data.tasks[0].status_message}" with status code: ${response.data.tasks[0].status_code}`);
         setLoading(false);
       } else {
