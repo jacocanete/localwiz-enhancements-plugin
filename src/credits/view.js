@@ -9,6 +9,9 @@ block.forEach(function (el) {
 });
 
 function Credits() {
+	console.log(auth);
+	const { register_url, logged_in, logout_url } = auth;
+
 	return (
 		<div className="container">
 			<div className="p-4 border shadow inner">
@@ -17,16 +20,24 @@ function Credits() {
 						<span>Credit Balance: $1000.00</span>
 					</div>
 					<div className="col d-flex justify-content-end align-items-center gap-2">
-						<button className="btn btn-dark" href="#">
-							Login
-						</button>
-						<a
-							className="btn btn-secondary"
-							role="button"
-							href={`${auth_urls.register_url}`}
-						>
-							Register
-						</a>
+						{logged_in ? (
+							<a className="btn btn-dark" role="button" href={`${logout_url}`}>
+								Logout
+							</a>
+						) : (
+							<>
+								<button className="btn btn-dark" href="#">
+									Login
+								</button>
+								<a
+									className="btn btn-secondary"
+									role="button"
+									href={`${auth.register_url}`}
+								>
+									Register
+								</a>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
