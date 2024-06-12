@@ -23,8 +23,13 @@ class LW_Enhancements_Public
             'nonce' => wp_create_nonce('wp_rest')
         );
 
+        $auth_urls = array(
+            'register_url' => esc_url(site_url('/wp-signup.php')),
+        );
+
         wp_localize_script('lw-enhancements-backlink-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-citation-finder-view-script', 'site_url', $site_url);
+        wp_localize_script('lw-enhancements-credits-view-script', 'auth_urls', $auth_urls);
     }
 
     function remove_header_footer_css()
