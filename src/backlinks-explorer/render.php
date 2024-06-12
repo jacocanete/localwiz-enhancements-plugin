@@ -24,7 +24,7 @@ function init_block_styles()
 
 	wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js', array('jquery'), null, true);
 
-	wp_localize_script('lw-enhancements-citation-finder-view-script', 'site_url', $site_url);
+	wp_localize_script('lw-enhancements-backlink-view-script', 'site_url', $site_url);
 }
 
 function remove_header_footer_css()
@@ -34,3 +34,18 @@ function remove_header_footer_css()
 		footer { display: none; }
 	</style>';
 }
+
+function print_script_handles()
+
+{
+
+	global $wp_scripts;
+
+	foreach ($wp_scripts->queue as $handle) :
+
+		echo $handle . ', ';
+
+	endforeach;
+}
+
+add_action('wp_print_scripts', 'print_script_handles');

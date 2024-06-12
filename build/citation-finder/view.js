@@ -11642,21 +11642,17 @@ function CitationFinder() {
       }
       const response = await axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/citation-finder?kw=${keyword}`);
       if (!response.statusText === "OK") {
-        console.log("Error fetching data");
+        setError("Error fetching data");
+        setLoading(false);
         return;
       } else {
         const data = response.data;
         const items = data.tasks[0].result[0].items;
-        const urls = items.map(item => [item.url ? item.url : "No url found"]);
-        urls.unshift([formData.keyword]);
-        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(urls);
-        let csvData = {
-          keyword: keyword,
-          csv: csv
-        };
-        let csvDataString = JSON.stringify(csvData);
-        console.log(csvDataString);
-        localStorage.setItem("csvData", csvDataString);
+        const csvData = items.map((item, index) => ({
+          Keyword: index === 0 ? formData.keyword : "",
+          URL: item.url ? item.url : "No url found"
+        }));
+        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(csvData);
         let csvBlob = new Blob([csv], {
           type: "text/csv;charset=utf-8;"
         });
@@ -11665,7 +11661,7 @@ function CitationFinder() {
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         setFilename(`${formattedDate} ${formData.keyword}.csv`);
         setTime(parseFloat(data.time));
-        setItems(urls);
+        setItems(csvData);
         setResults(csvUrl);
         setLoading(false);
       }
@@ -11674,6 +11670,7 @@ function CitationFinder() {
       setLoading(false);
     }
   }
+  console.log(items);
   function handleChange(e) {
     setFormData({
       ...formData,
@@ -11685,7 +11682,7 @@ function CitationFinder() {
     getResults(formData.keyword);
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container"
+    className: "container mb-5"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "p-4 border shadow inner"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
@@ -11741,24 +11738,24 @@ function CitationFinder() {
     "data-bs-title": "Preview CSV",
     id: "tooltipButton"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container collapse",
+    className: "container collapse table-responsive",
     id: "urlCollapse"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
-    className: "table mt-3"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "URL"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((url, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
+    className: "table table-striped table-hover mt-3 caption-top"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("caption", null, "Download the CSV for a better view."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", {
+    className: "table-dark"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, items[0] && Object.keys(items[0]).map((key, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
     key: index
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
-    style: {
-      maxWidth: "0",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      whiteSpace: "nowrap"
-    }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: url,
+  }, key)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((item, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
+    key: index
+  }, Object.values(item).map((value, i) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    key: i,
+    className: "text-truncate"
+  }, typeof value === "string" && value.startsWith("http") ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: value,
     target: "_blank",
     rel: "noreferrer"
-  }, url)))))))));
+  }, value) : typeof value === "boolean" ? value.toString() : typeof value === "object" ? JSON.stringify(value) : value)))))))));
 }
 })();
 
