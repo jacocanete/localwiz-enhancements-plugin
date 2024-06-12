@@ -148,6 +148,7 @@ function BacklinksExplorer() {
 					`Error fetching data: "${response.data.tasks[0].status_message}" with status code: ${response.data.tasks[0].status_code}`,
 				);
 				setLoading(false);
+				return;
 			} else {
 				const data = response.data;
 				console.log(data);
