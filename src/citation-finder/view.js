@@ -53,15 +53,10 @@ function CitationFinder() {
 			} else {
 				const data = response.data;
 				const items = data.tasks[0].result[0].items;
-				let firstInstance = true;
-				const csvData = items.map((item) => {
-					const newItem = {
-						keyword: firstInstance ? formData.keyword : "",
-						...item,
-					};
-					firstInstance = false;
-					return newItem;
-				});
+				const csvData = items.map((item, index) => ({
+					Keyword: index === 0 ? formData.keyword : "",
+					URL: item.url ? item.url : "No url found",
+				}));
 
 				let csv = Papa.unparse(csvData);
 
