@@ -98,95 +98,97 @@ function CitationFinder() {
 
 	return (
 		<div className="container">
-			<form onSubmit={handleSubmit}>
-				<div className="mb-3">
-					<label class="form-label">Enter keyword here</label>
-					<input
-						type="text"
-						name="keyword"
-						className="form-control"
-						placeholder="ex. Weather control"
-						onChange={handleChange}
-						disabled={loading}
-					></input>
-				</div>
-				<div className="mb-3">
-					<button
-						type="submit"
-						className="btn btn-success w-100"
-						disabled={loading}
-					>
-						{loading ? (
-							<span
-								className="spinner-border spinner-border-sm"
-								role="status"
-								aria-hidden="true"
-							></span>
-						) : (
-							"Submit"
-						)}
-					</button>
-				</div>
-			</form>
-			{error && <div className="alert alert-danger">{error}</div>}
-			{results && (
-				<>
-					<span>
-						This task took <strong>{time}</strong>{" "}
-						{time === 1 ? "second" : "seconds"} to complete.
-					</span>
-					<hr />
-					<div className="mt-3 d-flex flex-row justify-content-center align-items-center">
-						<span>{filename}</span>
-						<a href={results} download={filename} className="btn btn-link">
-							<FaDownload />
-						</a>
-						<br />
+			<div className="p-4 border shadow inner">
+				<form onSubmit={handleSubmit}>
+					<div className="mb-3">
+						<label class="form-label">Enter keyword here</label>
+						<input
+							type="text"
+							name="keyword"
+							className="form-control"
+							placeholder="ex. Weather control"
+							onChange={handleChange}
+							disabled={loading}
+						/>
+					</div>
+					<div className="mb-3">
 						<button
-							className="btn btn-link"
-							onClick={(e) => {
-								e.preventDefault();
-								if (viewTable) {
-									setViewTable(false);
-								} else {
-									setViewTable(true);
-								}
-							}}
+							type="submit"
+							className="btn btn-success w-100"
+							disabled={loading}
 						>
-							<FaEye />
+							{loading ? (
+								<span
+									className="spinner-border spinner-border-sm"
+									role="status"
+									aria-hidden="true"
+								></span>
+							) : (
+								"Submit"
+							)}
 						</button>
 					</div>
-				</>
-			)}
-			{viewTable && (
-				<div className="container">
-					<table className="table mt-3">
-						<thead>
-							<tr>
-								<th>URL</th>
-							</tr>
-						</thead>
-						<tbody>
-							{items.map((url, index) => (
-								<tr key={index}>
-									<td
-										style={{
-											maxWidth: "0",
-											overflow: "hidden",
-											textOverflow: "ellipsis",
-											whiteSpace: "nowrap",
-										}}
-									>
-										<a href={url} target="_blank" rel="noreferrer">
-											{url}
-										</a>
-									</td>
+				</form>
+				{error && <div className="alert alert-danger">{error}</div>}
+				{results && (
+					<>
+						<span>
+							This task took <strong>{time}</strong>{" "}
+							{time === 1 ? "second" : "seconds"} to complete.
+						</span>
+						<hr />
+						<div className="mt-3 d-flex flex-row justify-content-center align-items-center">
+							<span>{filename}</span>
+							<a href={results} download={filename} className="btn btn-link">
+								<FaDownload />
+							</a>
+							<br />
+							<button
+								className="btn btn-link"
+								onClick={(e) => {
+									e.preventDefault();
+									if (viewTable) {
+										setViewTable(false);
+									} else {
+										setViewTable(true);
+									}
+								}}
+							>
+								<FaEye />
+							</button>
+						</div>
+					</>
+				)}
+				{viewTable && (
+					<div className="container">
+						<table className="table mt-3">
+							<thead>
+								<tr>
+									<th>URL</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			)}
+							</thead>
+							<tbody>
+								{items.map((url, index) => (
+									<tr key={index}>
+										<td
+											style={{
+												maxWidth: "0",
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												whiteSpace: "nowrap",
+											}}
+										>
+											<a href={url} target="_blank" rel="noreferrer">
+												{url}
+											</a>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }

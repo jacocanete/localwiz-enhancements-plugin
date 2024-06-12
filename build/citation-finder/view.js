@@ -11684,6 +11684,8 @@ function CitationFinder() {
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "container"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "p-4 border shadow inner"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     onSubmit: handleSubmit
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -11742,7 +11744,7 @@ function CitationFinder() {
     href: url,
     target: "_blank",
     rel: "noreferrer"
-  }, url))))))));
+  }, url)))))))));
 }
 })();
 

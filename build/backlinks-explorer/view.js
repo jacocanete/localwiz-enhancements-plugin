@@ -108,7 +108,103 @@ block.forEach(function (el) {
   el.classList.remove("backlinks-explorer-update");
 });
 function BacklinksExplorer() {
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h3", null, "Backlinks Explorer Block Hi from front-end"));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "container"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "p-4 border shadow inner"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "row mb-3"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Target:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "url",
+    class: "form-control",
+    id: "target"
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "row mb-3"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Mode:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    className: "form-select",
+    "aria-label": "Default select example"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    selected: true,
+    value: "1"
+  }, "As Is"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "2"
+  }, "One Per Domain"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "3"
+  }, "One Per Anchor"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Include Subdomains:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    className: "form-select",
+    "aria-label": "Default select example"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    selected: true,
+    value: "1"
+  }, "Enable"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "2"
+  }, "Disable")))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "row mb-3"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Include Indirect Links:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    className: "form-select",
+    "aria-label": "Default select example"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    selected: true,
+    value: "1"
+  }, "Enable"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "2"
+  }, "Disable"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Backlink Status Type:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+    className: "form-select",
+    "aria-label": "Default select example"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    selected: true,
+    value: "1"
+  }, "All"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "2"
+  }, "Live"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
+    value: "3"
+  }, "Lost")))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "row mb-3"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
+    for: "target",
+    class: "form-label"
+  }, "Internal List Limit:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "number",
+    class: "form-control",
+    id: "target",
+    min: "1",
+    max: "1000"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "row mb-3"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "col"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    className: "btn btn-success w-100"
+  }, "Submit"))))));
 }
 /******/ })()
 ;

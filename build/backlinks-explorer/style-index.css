@@ -11,4 +11,12 @@
   margin-top: 5rem !important;
 }
 
+body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+  max-width: unset !important;
+}
+
+.inner {
+  border-radius: 0.5rem;
+}
+
 /*# sourceMappingURL=style-index.css.map*/
