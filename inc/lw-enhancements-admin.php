@@ -2,6 +2,15 @@
 
 class LW_Enhancements_Admin
 {
+    public $charset;
+    public $tablename;
+
+    function __construct()
+    {
+        global $wpdb;
+        $this->charset = $wpdb->get_charset_collate();
+        $this->tablename = $wpdb->prefix . 'requests';
+    }
 
     public function lw_enhancements_menu()
     {
@@ -94,5 +103,20 @@ class LW_Enhancements_Admin
     public function lw_enhancements_user_meta()
     {
         add_user_meta(get_current_user_id(), 'lw-enhancements-credits', 1000, true);
+    }
+
+    public function init_db()
+    {
+        error_log('init_db function was called');
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta("CREATE TABLE $this->tablename (
+            id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            user_id bigint(20) unsigned NOT NULL,
+            request_type varchar(255) NOT NULL DEFAULT '',
+            csv_data JSON NOT NULL,
+            cost bigint(20) unsigned NOT NULL,
+            PRIMARY KEY  (id)
+        ) $this->charset;");
     }
 }

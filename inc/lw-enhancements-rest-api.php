@@ -2,6 +2,16 @@
 class LW_Enhancements_REST_API
 {
 
+    public $charset;
+    public $tablename;
+
+    public function __construct()
+    {
+        global $wpdb;
+        $this->charset = $wpdb->get_charset_collate();
+        $this->tablename = $wpdb->prefix . 'requests';
+    }
+
     public function register_routes()
     {
         register_rest_route(
@@ -10,6 +20,16 @@ class LW_Enhancements_REST_API
             array(
                 'methods' => WP_REST_SERVER::READABLE,
                 'callback' => array($this, 'citation_finder'),
+                'permission_callback' => array($this, 'verify_nonce')
+            )
+        );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
+            'backlinks-explorer',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'backlinks_explorer'),
                 'permission_callback' => array($this, 'verify_nonce')
             )
         );
@@ -26,10 +46,10 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
-            'backlinks-explorer',
+            'save-csv',
             array(
-                'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'backlinks_explorer'),
+                'methods' => WP_REST_SERVER::CREATABLE,
+                'callback' => array($this, 'save_csv'),
                 'permission_callback' => array($this, 'verify_nonce')
             )
         );
@@ -216,5 +236,45 @@ class LW_Enhancements_REST_API
             $response->set_status(500);
         }
         return $response;
+    }
+
+    public function save_csv(WP_REST_Request $request)
+    {
+        global $wpdb;
+
+        $csv_data = $request->get_param('csv_data');
+        $request_type = $request->get_param('request_type');
+        $cost = $request->get_param('cost');
+
+        if (!$csv_data || !$request_type || !$cost) {
+            return new WP_Error('missing_parameters', 'CSV data and request type are required', array('status' => 400));
+        }
+
+        $user_id = get_current_user_id();
+        $table_name = $this->tablename;
+
+        $data = array(
+            'user_id' => $user_id,
+            'request_type' => $request_type,
+            'csv_data' => $csv_data,
+            'cost' => $$cost,
+        );
+        $format = array(
+            '%d',
+            '%d',
+            '%s',
+            '%d'
+        );
+
+        $wpdb->insert($table_name, $data, $format);
+
+        if ($wpdb->last_error) {
+            return new WP_Error('db_insert_error', $wpdb->last_error, array('status' => 500));
+        }
+
+        return new WP_REST_Response(array(
+            'status' => 'success',
+            'message' => 'CSV data saved successfully',
+        ), 200);
     }
 }
