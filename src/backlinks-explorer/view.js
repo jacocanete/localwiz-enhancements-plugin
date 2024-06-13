@@ -152,9 +152,12 @@ function BacklinksExplorer() {
 
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
+				{
+					headers: {
+						"X-WP-Nonce": site_url.nonce,
+					},
+				},
 			);
-
-			console.log(response);
 
 			if (!response.statusText === "OK") {
 				setError("Error fetching data");
