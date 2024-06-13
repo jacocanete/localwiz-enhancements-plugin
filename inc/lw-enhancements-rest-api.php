@@ -52,6 +52,15 @@ class LW_Enhancements_REST_API
                 'callback' => array($this, 'save_csv'),
             )
         );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
+            'get-csv',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'get_csv'),
+            )
+        );
     }
 
     public function verify_nonce(WP_REST_Request $request)
@@ -244,9 +253,11 @@ class LW_Enhancements_REST_API
         $csv_data = $request->get_param('csv_data');
         $request_type = $request->get_param('request_type');
         $cost = $request->get_param('cost');
+        $file_name = $request->get_param('file_name');
 
         error_log("CSV data: " . json_encode($csv_data));
         error_log("Request type: " . json_encode($request_type));
+        error_log("File name: " . json_encode($file_name));
 
         if (!isset($csv_data) || !isset($request_type) || !isset($cost)) {
             return new WP_Error('missing_parameters', 'CSV data and request type are required', array('status' => 400));
@@ -258,11 +269,13 @@ class LW_Enhancements_REST_API
         $data = array(
             'user_id' => $user_id,
             'request_type' => $request_type,
+            'file_name' => $file_name,
             'csv_data' => json_encode($csv_data),
             'cost' => $cost,
         );
         $format = array(
             '%d',
+            '%s',
             '%s',
             '%s',
             '%d'
@@ -278,5 +291,36 @@ class LW_Enhancements_REST_API
             'status' => 'success',
             'message' => 'CSV data saved successfully',
         ), 200);
+    }
+
+    public function get_csv(WP_REST_Request $request)
+    {
+        global $wpdb;
+
+        $table_name = $this->tablename;
+
+        $user_id = get_current_user_id();
+        $request_type = $request->get_param('request_type');
+
+        $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND request_type = %s", array($user_id, $request_type));
+        $results = $wpdb->get_results($ourQuery);
+
+        if ($wpdb->last_error) {
+            return new WP_Error('db_select_error', $wpdb->last_error, array('status' => 500));
+        }
+
+        // Remove extra backslashes from the JSON string
+        foreach ($results as $key => $row) {
+            if (isset($row->csv_data)) {
+                $results[$key]->csv_data = json_decode(stripslashes($row->csv_data), true);
+            }
+        }
+
+        wp_send_json(array(
+            'status' => 'success',
+            'message' => 'CSV data retrieved successfully',
+            'data' => $results
+        ), 200);
+        exit;
     }
 }

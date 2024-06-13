@@ -114,6 +114,7 @@ class LW_Enhancements_Admin
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             user_id bigint(20) unsigned NOT NULL,
             request_type varchar(255) NOT NULL DEFAULT '',
+            file_name varchar(255) NOT NULL DEFAULT '',
             csv_data JSON NOT NULL,
             cost bigint(20) unsigned NOT NULL,
             PRIMARY KEY  (id)
