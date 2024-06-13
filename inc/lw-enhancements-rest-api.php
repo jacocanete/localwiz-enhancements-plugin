@@ -16,6 +16,16 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
+            'credits',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'get_credits_balance'),
+                'permission_callback' => array($this, 'verify_nonce')
+            )
+        );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
             'backlinks-explorer',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
@@ -180,5 +190,31 @@ class LW_Enhancements_REST_API
         }
 
         wp_send_json($responseArray);
+    }
+
+    public function get_credits_balance()
+    {
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if ($credits_balance !== false) {
+            $response = new WP_REST_Response(array(
+                'status' => 'success',
+                'message' => 'Credits balance retrieved successfully',
+                'balance' => $credits_balance
+            ));
+            $response->set_status(200);
+        } else {
+            $response = new WP_REST_Response(array(
+                'status' => 'error',
+                'message' => 'Failed to retrieve credits balance',
+                'balance' => $credits_balance
+            ));
+            $response->set_status(500);
+        }
+        return $response;
     }
 }
