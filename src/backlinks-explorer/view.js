@@ -182,7 +182,22 @@ function BacklinksExplorer() {
 					return newItem;
 				});
 
-				console.log(csvData);
+				const saveData = await axios.post(
+					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`,
+					{
+						csv_data: csvData,
+						request_type: "backlinks-explorer",
+						cost: data.tasks[0].cost,
+					},
+					{
+						headers: {
+							"X-WP-Nonce": site_url.nonce,
+							"Content-Type": "application/json",
+						},
+					},
+				);
+
+				console.log(saveData);
 
 				let flatData = flattenData(csvData);
 
