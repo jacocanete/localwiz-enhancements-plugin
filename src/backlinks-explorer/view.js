@@ -198,6 +198,9 @@ function BacklinksExplorer() {
 				setFilename(`${formattedDate} ${formData.target}.csv`);
 				setTime(parseFloat(data.time));
 				setItems(csvData);
+
+				console.log(csv);
+
 				setResults(csvUrl);
 				setLoading(false);
 			}

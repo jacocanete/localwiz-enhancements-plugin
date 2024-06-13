@@ -44,6 +44,11 @@ function CitationFinder() {
 
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/citation-finder?kw=${keyword}`,
+				{
+					headers: {
+						"X-WP-Nonce": site_url.nonce,
+					},
+				},
 			);
 
 			if (!response.statusText === "OK") {
