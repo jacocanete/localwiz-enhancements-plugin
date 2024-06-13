@@ -1,6 +1,47 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/backlinks-explorer/utils/csvUtils.js":
+/*!**************************************************!*\
+  !*** ./src/backlinks-explorer/utils/csvUtils.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   fixCsvData: () => (/* binding */ fixCsvData),
+/* harmony export */   generateCsvUrls: () => (/* binding */ generateCsvUrls)
+/* harmony export */ });
+/* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
+/* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _flattenData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flattenData */ "./src/backlinks-explorer/utils/flattenData.js");
+
+
+function fixCsvData(csvData) {
+  let firstInstance = true;
+  return csvData.map(csvItem => {
+    const newItem = {
+      ...csvItem,
+      target: firstInstance ? csvItem.target : ""
+    };
+    firstInstance = false;
+    return newItem;
+  });
+}
+function generateCsvUrls(fixedData) {
+  return fixedData.map(item => {
+    const flattenedItem = (0,_flattenData__WEBPACK_IMPORTED_MODULE_1__.flattenData)(item);
+    const csv = papaparse__WEBPACK_IMPORTED_MODULE_0___default().unparse(flattenedItem);
+    const csvBlob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+    return [URL.createObjectURL(csvBlob)];
+  });
+}
+
+/***/ }),
+
 /***/ "./src/backlinks-explorer/utils/flattenData.js":
 /*!*****************************************************!*\
   !*** ./src/backlinks-explorer/utils/flattenData.js ***!
@@ -11629,11 +11670,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
 /* harmony import */ var _utils_flattenData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/flattenData */ "./src/backlinks-explorer/utils/flattenData.js");
+/* harmony import */ var _utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/csvUtils */ "./src/backlinks-explorer/utils/csvUtils.js");
+
 
 
 
@@ -11656,16 +11699,9 @@ function BacklinksExplorer() {
   const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [files, setFiles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
-  const [filename, setFilename] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
-  const [viewTable, setViewTable] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [time, setTime] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    console.log(download);
-  }, [download]);
   function handleSubmit(e) {
     e.preventDefault();
     setError(null);
@@ -11680,7 +11716,7 @@ function BacklinksExplorer() {
   }
   async function getSavedResults() {
     try {
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         },
@@ -11689,34 +11725,14 @@ function BacklinksExplorer() {
         }
       });
       const data = response.data.data;
+      const fixedData = data.map(item => (0,_utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__.fixCsvData)(item.csv_data));
+      const url = (0,_utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__.generateCsvUrls)(fixedData);
       setItems(data);
-      const fixedData = data.map(item => {
-        let firstInstance = true;
-        return item.csv_data.map((csvItem, index) => {
-          const newItem = {
-            target: firstInstance ? csvItem.target : "",
-            type: csvItem.type,
-            rank: csvItem.rank,
-            ...csvItem
-          };
-          firstInstance = false;
-          return newItem;
-        });
-      });
-      const url = fixedData.map(item => {
-        const flattenedItem = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_3__.flattenData)(item);
-        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flattenedItem);
-        let csvBlob = new Blob([csv], {
-          type: "text/csv;charset=utf-8;"
-        });
-        let csvUrl = URL.createObjectURL(csvBlob);
-        const newItem = [csvUrl];
-        return newItem;
-      });
       setDownload(url);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      setError(`Unable to fetch data: ${error.message}`);
+      setLoading(false);
     }
   }
   async function submitResults(params) {
@@ -11796,20 +11812,7 @@ function BacklinksExplorer() {
       } else if (mode === "3") {
         modeValue = "one_per_anchor";
       }
-
-      // {
-      // 	"target": "dataforseo.com",
-      // 	"limit": 100,
-      // 	"internal_list_limit": 10,
-      // 	"backlinks_status_type": "live",
-      // 	"include_subdomains": true,
-      // 	"include_indirect_links": true,
-      // 	"mode": "as_is" or "one_per_domain" or "one_per_anchor"
-      // }
-
-      // http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=dataforseo.com&is=true&iil=true&bst=live&ill=10&m=as_is
-
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -11837,7 +11840,7 @@ function BacklinksExplorer() {
         let date = new Date();
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
         setTime(parseFloat(data.time));
-        const saveData = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`, {
+        const saveData = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`, {
           csv_data: csvData,
           request_type: "backlinks-explorer",
           cost: data.tasks[0].cost,
@@ -12007,19 +12010,11 @@ function BacklinksExplorer() {
     href: download[index],
     className: "btn btn-link",
     download: item.file_name
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "btn btn-link"
-    // onClick={(e) => {
-    // 	e.preventDefault();
-    // 	if (viewTable) {
-    // 		setViewTable(false);
-    // 	} else {
-    // 		setViewTable(true);
-    // 	}
-    // }}
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)))))))))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaEye, null)))))))))));
 }
 })();
 

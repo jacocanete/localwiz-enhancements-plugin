@@ -5,6 +5,7 @@ import Papa from "papaparse";
 import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import { flattenData } from "./utils/flattenData";
+import { fixCsvData, generateCsvUrls } from "./utils/csvUtils";
 
 const block = document.querySelectorAll(".backlinks-explorer-update");
 
@@ -22,17 +23,9 @@ function BacklinksExplorer() {
 	const [formData, setFormData] = useState({});
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const [results, setResults] = useState(null);
-	const [files, setFiles] = useState(null);
-	const [filename, setFilename] = useState("");
-	const [viewTable, setViewTable] = useState(false);
 	const [items, setItems] = useState([]);
 	const [time, setTime] = useState(0);
 	const [download, setDownload] = useState({});
-
-	useEffect(() => {
-		console.log(download);
-	}, [download]);
 
 	function handleSubmit(e) {
 		e.preventDefault();
@@ -63,36 +56,16 @@ function BacklinksExplorer() {
 
 			const data = response.data.data;
 
+			const fixedData = data.map((item) => fixCsvData(item.csv_data));
+
+			const url = generateCsvUrls(fixedData);
+
 			setItems(data);
-
-			const fixedData = data.map((item) => {
-				let firstInstance = true;
-				return item.csv_data.map((csvItem, index) => {
-					const newItem = {
-						target: firstInstance ? csvItem.target : "",
-						type: csvItem.type,
-						rank: csvItem.rank,
-						...csvItem,
-					};
-					firstInstance = false;
-					return newItem;
-				});
-			});
-
-			const url = fixedData.map((item) => {
-				const flattenedItem = flattenData(item);
-				let csv = Papa.unparse(flattenedItem);
-				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-				let csvUrl = URL.createObjectURL(csvBlob);
-				const newItem = [csvUrl];
-				return newItem;
-			});
-
 			setDownload(url);
-
 			setLoading(false);
 		} catch (error) {
-			console.log(error);
+			setError(`Unable to fetch data: ${error.message}`);
+			setLoading(false);
 		}
 	}
 
@@ -183,18 +156,6 @@ function BacklinksExplorer() {
 			} else if (mode === "3") {
 				modeValue = "one_per_anchor";
 			}
-
-			// {
-			// 	"target": "dataforseo.com",
-			// 	"limit": 100,
-			// 	"internal_list_limit": 10,
-			// 	"backlinks_status_type": "live",
-			// 	"include_subdomains": true,
-			// 	"include_indirect_links": true,
-			// 	"mode": "as_is" or "one_per_domain" or "one_per_anchor"
-			// }
-
-			// http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=dataforseo.com&is=true&iil=true&bst=live&ill=10&m=as_is
 
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
@@ -436,17 +397,7 @@ function BacklinksExplorer() {
 												</a>
 											</td>
 											<td className="text-truncate">
-												<button
-													className="btn btn-link"
-													// onClick={(e) => {
-													// 	e.preventDefault();
-													// 	if (viewTable) {
-													// 		setViewTable(false);
-													// 	} else {
-													// 		setViewTable(true);
-													// 	}
-													// }}
-												>
+												<button className="btn btn-link">
 													<FaEye />
 												</button>
 											</td>
