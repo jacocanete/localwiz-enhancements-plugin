@@ -182,6 +182,8 @@ function BacklinksExplorer() {
 					return newItem;
 				});
 
+				console.log(csvData);
+
 				let flatData = flattenData(csvData);
 
 				let csv = Papa.unparse(flatData);
@@ -198,9 +200,6 @@ function BacklinksExplorer() {
 				setFilename(`${formattedDate} ${formData.target}.csv`);
 				setTime(parseFloat(data.time));
 				setItems(csvData);
-
-				console.log(csv);
-
 				setResults(csvUrl);
 				setLoading(false);
 			}
