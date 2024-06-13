@@ -50,7 +50,6 @@ class LW_Enhancements_REST_API
             array(
                 'methods' => WP_REST_SERVER::CREATABLE,
                 'callback' => array($this, 'save_csv'),
-                'permission_callback' => array($this, 'verify_nonce')
             )
         );
     }
@@ -246,7 +245,10 @@ class LW_Enhancements_REST_API
         $request_type = $request->get_param('request_type');
         $cost = $request->get_param('cost');
 
-        if (!$csv_data || !$request_type || !$cost) {
+        error_log("CSV data: " . json_encode($csv_data));
+        error_log("Request type: " . json_encode($request_type));
+
+        if (!isset($csv_data) || !isset($request_type) || !isset($cost)) {
             return new WP_Error('missing_parameters', 'CSV data and request type are required', array('status' => 400));
         }
 
@@ -256,12 +258,12 @@ class LW_Enhancements_REST_API
         $data = array(
             'user_id' => $user_id,
             'request_type' => $request_type,
-            'csv_data' => $csv_data,
-            'cost' => $$cost,
+            'csv_data' => json_encode($csv_data),
+            'cost' => $cost,
         );
         $format = array(
             '%d',
-            '%d',
+            '%s',
             '%s',
             '%d'
         );
