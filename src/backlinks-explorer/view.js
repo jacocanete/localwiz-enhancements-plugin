@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import react, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import Papa from "papaparse";
@@ -23,15 +23,21 @@ function BacklinksExplorer() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const [results, setResults] = useState(null);
+	const [files, setFiles] = useState(null);
 	const [filename, setFilename] = useState("");
 	const [viewTable, setViewTable] = useState(false);
 	const [items, setItems] = useState([]);
 	const [time, setTime] = useState(0);
+	const [download, setDownload] = useState({});
+
+	useEffect(() => {
+		console.log(download);
+	}, [download]);
 
 	function handleSubmit(e) {
 		e.preventDefault();
 		setError(null);
-		getResults({
+		submitResults({
 			formData,
 			mode,
 			subdomains,
@@ -57,15 +63,40 @@ function BacklinksExplorer() {
 
 			const data = response.data.data;
 
-			console.log(data);
+			setItems(data);
+
+			const fixedData = data.map((item) => {
+				let firstInstance = true;
+				return item.csv_data.map((csvItem, index) => {
+					const newItem = {
+						target: firstInstance ? csvItem.target : "",
+						type: csvItem.type,
+						rank: csvItem.rank,
+						...csvItem,
+					};
+					firstInstance = false;
+					return newItem;
+				});
+			});
+
+			const url = fixedData.map((item) => {
+				const flattenedItem = flattenData(item);
+				let csv = Papa.unparse(flattenedItem);
+				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+				let csvUrl = URL.createObjectURL(csvBlob);
+				const newItem = [csvUrl];
+				return newItem;
+			});
+
+			setDownload(url);
+
+			setLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
 	}
 
-	getSavedResults();
-
-	async function getResults(params) {
+	async function submitResults(params) {
 		try {
 			const {
 				formData,
@@ -197,24 +228,12 @@ function BacklinksExplorer() {
 					return newItem;
 				});
 
-				let flatData = flattenData(csvData);
-
-				let csv = Papa.unparse(flatData);
-
-				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-
-				let csvUrl = URL.createObjectURL(csvBlob);
-
 				let date = new Date();
 				let formattedDate = `${date.getFullYear()}-${
 					date.getMonth() + 1
 				}-${date.getDate()}`;
 
-				setFilename(`${formattedDate} ${formData.target}.csv`);
 				setTime(parseFloat(data.time));
-				setItems(csvData);
-				setResults(csvUrl);
-				setLoading(false);
 
 				const saveData = await axios.post(
 					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`,
@@ -231,6 +250,11 @@ function BacklinksExplorer() {
 						},
 					},
 				);
+
+				if (saveData.statusText === "OK") {
+					console.log("Data saved");
+					await getSavedResults();
+				}
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);
@@ -239,7 +263,7 @@ function BacklinksExplorer() {
 	}
 
 	return (
-		<div className="container mb-5">
+		<div className="container mb-5 h-75">
 			<div className="p-4 border shadow inner">
 				<form onSubmit={handleSubmit}>
 					<div className="row mb-3">
@@ -366,50 +390,75 @@ function BacklinksExplorer() {
 					</div>
 				</form>
 				{error && <div className="alert alert-danger">{error}</div>}
-				{results && (
+
+				{items && items.length > 0 && (
 					<>
 						<span>
 							This task took <strong>{time}</strong>{" "}
 							{time === 1 ? "second" : "seconds"} to complete.
 						</span>
-						<hr />
-						<div className="mt-3 d-flex flex-row justify-content-center align-items-center">
-							<span>{filename}</span>
-							<a
-								href={results}
-								download={filename}
-								className="btn btn-link"
-								data-bs-placement="top"
-								data-bs-title="Download CSV"
-								id="tooltipButton"
-							>
-								<FaDownload />
-							</a>
-							<br />
-							<button
-								className="btn btn-link"
-								// onClick={(e) => {
-								// 	e.preventDefault();
-								// 	if (viewTable) {
-								// 		setViewTable(false);
-								// 	} else {
-								// 		setViewTable(true);
-								// 	}
-								// }}
-								data-bs-toggle="collapse"
-								data-bs-target="#urlCollapse"
-								aria-expanded="false"
-								aria-controls="urlCollapse"
-								data-bs-placement="top"
-								data-bs-title="Preview CSV"
-								id="tooltipButton"
-							>
-								<FaEye />
-							</button>
+						<hr className="mb-2" />
+						<div style={{ maxHeight: "30rem" }} className="table-responsive">
+							<table className="table table-striped table-hover mt-3 caption-top">
+								<caption>Download the CSV for a better view.</caption>
+								<thead className="table-dark">
+									<tr>
+										<th>File Name</th>
+										<th>Download</th>
+										<th>View</th>
+									</tr>
+								</thead>
+								<tbody>
+									{items.map((item, index) => (
+										<tr>
+											<td className="text-truncate">
+												{index === items.length - 1 ? (
+													<>
+														{item.file_name}
+														<span
+															className="badge text-bg-success"
+															style={{ marginLeft: "0.5rem" }}
+														>
+															New
+														</span>
+													</>
+												) : (
+													item.file_name
+												)}
+											</td>
+											<td className="text-truncate">
+												<a
+													href={download[index]}
+													className="btn btn-link"
+													download={item.file_name}
+												>
+													<FaDownload />
+												</a>
+											</td>
+											<td className="text-truncate">
+												<button
+													className="btn btn-link"
+													// onClick={(e) => {
+													// 	e.preventDefault();
+													// 	if (viewTable) {
+													// 		setViewTable(false);
+													// 	} else {
+													// 		setViewTable(true);
+													// 	}
+													// }}
+												>
+													<FaEye />
+												</button>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
 						</div>
 					</>
 				)}
-				<div className="container collapse table-responsive" id="urlCollapse">
+
+				{/* <div className="container collapse table-responsive" id="urlCollapse">
 					<table className="table table-striped table-hover mt-3 caption-top">
 						<caption>Download the CSV for a better view.</caption>
 						<thead className="table-dark">
@@ -442,7 +491,7 @@ function BacklinksExplorer() {
 							))}
 						</tbody>
 					</table>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
