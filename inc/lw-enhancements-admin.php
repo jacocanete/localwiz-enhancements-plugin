@@ -65,7 +65,7 @@ class LW_Enhancements_Admin
     }
 
     // Use credits HTML
-    function useCreditsHTML()
+    public function useCreditsHTML()
     { ?>
         <select name="lw-enhancements-use-credits" value>
             <option value="0" <?php selected(get_option('lw-enhancements-use-credits'), '0') ?>>False</option>
@@ -74,20 +74,25 @@ class LW_Enhancements_Admin
     <?php }
 
     // Username HTML
-    function usernameHTML()
+    public function usernameHTML()
     { ?>
         <input type="text" name="lw-enhancements-username" value="<?php echo get_option('lw-enhancements-username'); ?>" />
     <?php }
 
     // Password HTML
-    function passwordHTML()
+    public function passwordHTML()
     { ?>
         <input type="password" name="lw-enhancements-password" value="<?php echo get_option('lw-enhancements-password'); ?>" />
 <?php }
 
-    function echo_plugin_version()
+    public function echo_plugin_version()
     {
         $plugin_data = get_plugin_data(CF_PLUGIN_DIR . 'lw-enhancements.php');
         echo $plugin_data['Version'];
+    }
+
+    public function lw_enhancements_user_meta()
+    {
+        add_user_meta(get_current_user_id(), 'lw-enhancements-credits', 1000, true);
     }
 }
