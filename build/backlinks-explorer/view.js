@@ -11657,14 +11657,19 @@ function BacklinksExplorer() {
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+  const [files, setFiles] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [filename, setFilename] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
   const [viewTable, setViewTable] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [time, setTime] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    console.log(download);
+  }, [download]);
   function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-    getResults({
+    submitResults({
       formData,
       mode,
       subdomains,
@@ -11673,17 +11678,48 @@ function BacklinksExplorer() {
       internalListLimit
     });
   }
-
-  // console.log({
-  // 	formData,
-  // 	mode,
-  // 	subdomains,
-  // 	includeIndirectLinks,
-  // 	backlinkStatusType,
-  // 	internalListLimit,
-  // });
-
-  async function getResults(params) {
+  async function getSavedResults() {
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
+        headers: {
+          "X-WP-Nonce": site_url.nonce
+        },
+        params: {
+          request_type: "backlinks-explorer"
+        }
+      });
+      const data = response.data.data;
+      setItems(data);
+      const fixedData = data.map(item => {
+        let firstInstance = true;
+        return item.csv_data.map((csvItem, index) => {
+          const newItem = {
+            target: firstInstance ? csvItem.target : "",
+            type: csvItem.type,
+            rank: csvItem.rank,
+            ...csvItem
+          };
+          firstInstance = false;
+          return newItem;
+        });
+      });
+      const url = fixedData.map(item => {
+        const flattenedItem = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_3__.flattenData)(item);
+        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flattenedItem);
+        let csvBlob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;"
+        });
+        let csvUrl = URL.createObjectURL(csvBlob);
+        const newItem = [csvUrl];
+        return newItem;
+      });
+      setDownload(url);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async function submitResults(params) {
     try {
       const {
         formData,
@@ -11798,20 +11834,24 @@ function BacklinksExplorer() {
           firstInstance = false;
           return newItem;
         });
-        let flatData = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_3__.flattenData)(csvData);
-        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flatData);
-        let csvBlob = new Blob([csv], {
-          type: "text/csv;charset=utf-8;"
-        });
-        let csvUrl = URL.createObjectURL(csvBlob);
         let date = new Date();
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-        setFilename(`${formattedDate} ${formData.target}.csv`);
         setTime(parseFloat(data.time));
-        setItems(csvData);
-        console.log(csv);
-        setResults(csvUrl);
-        setLoading(false);
+        const saveData = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`, {
+          csv_data: csvData,
+          request_type: "backlinks-explorer",
+          cost: data.tasks[0].cost,
+          file_name: formattedDate + " " + formData.target + ".csv"
+        }, {
+          headers: {
+            "X-WP-Nonce": site_url.nonce,
+            "Content-Type": "application/json"
+          }
+        });
+        if (saveData.statusText === "OK") {
+          console.log("Data saved");
+          await getSavedResults();
+        }
       }
     } catch (e) {
       setError(`Unable to fetch data: ${e.message}`);
@@ -11819,7 +11859,7 @@ function BacklinksExplorer() {
     }
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container mb-5"
+    className: "container mb-5 h-75"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "p-4 border shadow inner"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
@@ -11943,16 +11983,33 @@ function BacklinksExplorer() {
     "aria-hidden": "true"
   }) : "Submit")))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-danger"
-  }, error), results && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "mt-3 d-flex flex-row justify-content-center align-items-center"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, filename), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: results,
-    download: filename,
+  }, error), items && items.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+    className: "mb-2"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    style: {
+      maxHeight: "30rem"
+    },
+    className: "table-responsive"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
+    className: "table table-striped table-hover mt-3 caption-top"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("caption", null, "Download the CSV for a better view."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", {
+    className: "table-dark"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "File Name"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Download"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "View"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((item, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    className: "text-truncate"
+  }, index === items.length - 1 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, item.file_name, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "badge text-bg-success",
+    style: {
+      marginLeft: "0.5rem"
+    }
+  }, "New")) : item.file_name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    className: "text-truncate"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: download[index],
     className: "btn btn-link",
-    "data-bs-placement": "top",
-    "data-bs-title": "Download CSV",
-    id: "tooltipButton"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null)), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
+    download: item.file_name
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+    className: "text-truncate"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "btn btn-link"
     // onClick={(e) => {
     // 	e.preventDefault();
@@ -11962,33 +12019,7 @@ function BacklinksExplorer() {
     // 		setViewTable(true);
     // 	}
     // }}
-    ,
-    "data-bs-toggle": "collapse",
-    "data-bs-target": "#urlCollapse",
-    "aria-expanded": "false",
-    "aria-controls": "urlCollapse",
-    "data-bs-placement": "top",
-    "data-bs-title": "Preview CSV",
-    id: "tooltipButton"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container collapse table-responsive",
-    id: "urlCollapse"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
-    className: "table table-striped table-hover mt-3 caption-top"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("caption", null, "Download the CSV for a better view."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("thead", {
-    className: "table-dark"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, items[0] && Object.keys(items[0]).map((key, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", {
-    key: index
-  }, key)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((item, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", {
-    key: index
-  }, Object.values(item).map((value, i) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
-    key: i,
-    className: "text-truncate"
-  }, typeof value === "string" && value.startsWith("http") ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: value,
-    target: "_blank",
-    rel: "noreferrer"
-  }, value) : typeof value === "boolean" ? value.toString() : typeof value === "object" ? JSON.stringify(value) : value)))))))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)))))))))));
 }
 })();
 
