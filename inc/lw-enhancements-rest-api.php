@@ -9,7 +9,8 @@ class LW_Enhancements_REST_API
             'citation-finder',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'citation_finder')
+                'callback' => array($this, 'citation_finder'),
+                'permission_callback' => array($this, 'verify_nonce')
             )
         );
 
@@ -18,9 +19,26 @@ class LW_Enhancements_REST_API
             'backlinks-explorer',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'backlinks_explorer')
+                'callback' => array($this, 'backlinks_explorer'),
+                'permission_callback' => array($this, 'verify_nonce')
             )
         );
+    }
+
+    public function verify_nonce(WP_REST_Request $request)
+    {
+        $headers = $request->get_headers();
+        if (isset($headers['x_wp_nonce'])) {
+            $nonce = $headers['x_wp_nonce'][0];
+            if (wp_verify_nonce($nonce, 'wp_rest')) {
+                return true;
+            } else {
+                error_log("Nonce received: " . $nonce);
+                return new WP_Error('rest_forbidden', "Invalid nonce: $nonce", array('status' => 403));
+            }
+        }
+        error_log("No nonce received");
+        return new WP_Error('rest_forbidden', "Nonce not received", array('status' => 403));
     }
 
     public function citation_finder($keyword)
