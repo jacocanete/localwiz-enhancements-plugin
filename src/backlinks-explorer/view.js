@@ -41,14 +41,29 @@ function BacklinksExplorer() {
 		});
 	}
 
-	// console.log({
-	// 	formData,
-	// 	mode,
-	// 	subdomains,
-	// 	includeIndirectLinks,
-	// 	backlinkStatusType,
-	// 	internalListLimit,
-	// });
+	async function getSavedResults() {
+		try {
+			const response = await axios.get(
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`,
+				{
+					headers: {
+						"X-WP-Nonce": site_url.nonce,
+					},
+					params: {
+						request_type: "backlinks-explorer",
+					},
+				},
+			);
+
+			const data = response.data.data;
+
+			console.log(data);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	getSavedResults();
 
 	async function getResults(params) {
 		try {
@@ -182,23 +197,6 @@ function BacklinksExplorer() {
 					return newItem;
 				});
 
-				const saveData = await axios.post(
-					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`,
-					{
-						csv_data: csvData,
-						request_type: "backlinks-explorer",
-						cost: data.tasks[0].cost,
-					},
-					{
-						headers: {
-							"X-WP-Nonce": site_url.nonce,
-							"Content-Type": "application/json",
-						},
-					},
-				);
-
-				console.log(saveData);
-
 				let flatData = flattenData(csvData);
 
 				let csv = Papa.unparse(flatData);
@@ -217,6 +215,22 @@ function BacklinksExplorer() {
 				setItems(csvData);
 				setResults(csvUrl);
 				setLoading(false);
+
+				const saveData = await axios.post(
+					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`,
+					{
+						csv_data: csvData,
+						request_type: "backlinks-explorer",
+						cost: data.tasks[0].cost,
+						file_name: formattedDate + " " + formData.target + ".csv",
+					},
+					{
+						headers: {
+							"X-WP-Nonce": site_url.nonce,
+							"Content-Type": "application/json",
+						},
+					},
+				);
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);
