@@ -36,11 +36,14 @@ class LW_Enhancements_Public
         wp_localize_script('lw-enhancements-credits-view-script', 'auth', $auth);
     }
 
+
     function remove_header_footer_css()
     {
-        echo '<style>
-				header { display: none; }
-				footer { display: none; }
-			</style>';
+        if (has_block('lw-enhancements/backlinks-explorer') || has_block('lw-enhancements/citation-finder') || has_block('lw-enhancements/credits')) {
+            echo '<style>
+            header { display: none; }
+            footer { display: none; }
+            </style>';
+        }
     }
 }
