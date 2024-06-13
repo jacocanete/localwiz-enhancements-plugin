@@ -26,7 +26,7 @@ class LW_Enhancements_Loader
         $this->admin = new LW_Enhancements_Admin();
         add_action('admin_menu', array($this->admin, 'lw_enhancements_menu'));
         add_action('admin_init', array($this->admin, 'lw_enhancements_settings'));
-        add_action('admin_init', array($this->admin, 'lw_enhancements_user_meta')); // use 'user_register' instead of 'admin_init' to add user meta
+        add_action('user_register', array($this->admin, 'lw_enhancements_user_meta')); // use 'user_register' instead of 'admin_init'
     }
 
     private function define_public_hooks()
