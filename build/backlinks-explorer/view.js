@@ -11701,11 +11701,16 @@ function BacklinksExplorer() {
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [time, setTime] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
+  const [currentID, setCurrentID] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
+  const [submitting, setSubmitting] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    getSavedResults();
+  }, []);
   function handleSubmit(e) {
     e.preventDefault();
     setError(null);
-    submitResults({
+    getResults({
       formData,
       mode,
       subdomains,
@@ -11724,18 +11729,24 @@ function BacklinksExplorer() {
           request_type: "backlinks-explorer"
         }
       });
-      const data = response.data.data;
-      const fixedData = data.map(item => (0,_utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__.fixCsvData)(item.csv_data));
-      const url = (0,_utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__.generateCsvUrls)(fixedData);
-      setItems(data);
-      setDownload(url);
+      if (!response.statusText === "OK") {
+        setError(`Unable to fetch saved results: ${error.message}`);
+        setLoading(false);
+        return;
+      } else {
+        const data = response.data;
+        const items = data.data;
+        setItems(items);
+        setCurrentID(items[0].id);
+      }
       setLoading(false);
+      setError(null);
     } catch (error) {
-      setError(`Unable to fetch data: ${error.message}`);
+      setError(`Unable to fetch saved results: ${error.message}`);
       setLoading(false);
     }
   }
-  async function submitResults(params) {
+  async function getResults(params) {
     try {
       const {
         formData,
@@ -11837,24 +11848,39 @@ function BacklinksExplorer() {
           firstInstance = false;
           return newItem;
         });
+        let flatData = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_3__.flattenData)(csvData);
+        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flatData);
+        let csvBlob = new Blob([csv], {
+          type: "text/csv;charset=utf-8;"
+        });
+        let csvUrl = URL.createObjectURL(csvBlob);
         let date = new Date();
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+        let url = new URL(formData.target);
+        let formattedHostName = url.hostname.replace("www.", "");
+        let reader = new FileReader();
+        reader.readAsDataURL(csvBlob);
+        reader.onloadend = function () {
+          let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
+
+          axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
+            csv_data: base64data,
+            file_name: `${formattedDate}-${formattedHostName}`,
+            cost: data.cost,
+            request_type: "backlinks-explorer"
+          }, {
+            headers: {
+              "X-WP-Nonce": site_url.nonce,
+              "Content-Type": "application/json"
+            }
+          }).then(response => {
+            getSavedResults();
+            setSubmitting(true);
+          }).catch(error => {
+            setError("Error uploading file:", error.response.data);
+          });
+        };
         setTime(parseFloat(data.time));
-        const saveData = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`, {
-          csv_data: csvData,
-          request_type: "backlinks-explorer",
-          cost: data.tasks[0].cost,
-          file_name: formattedDate + " " + formData.target + ".csv"
-        }, {
-          headers: {
-            "X-WP-Nonce": site_url.nonce,
-            "Content-Type": "application/json"
-          }
-        });
-        if (saveData.statusText === "OK") {
-          console.log("Data saved");
-          await getSavedResults();
-        }
       }
     } catch (e) {
       setError(`Unable to fetch data: ${e.message}`);
@@ -11862,7 +11888,7 @@ function BacklinksExplorer() {
     }
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "container mb-5 h-75"
+    className: "container mb-5"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "p-4 border shadow inner"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
@@ -11986,12 +12012,9 @@ function BacklinksExplorer() {
     "aria-hidden": "true"
   }) : "Submit")))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-danger"
-  }, error), items && items.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+  }, error), items && items.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
     className: "mb-2"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    style: {
-      maxHeight: "30rem"
-    },
     className: "table-responsive"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
     className: "table table-striped table-hover mt-3 caption-top"
@@ -11999,7 +12022,7 @@ function BacklinksExplorer() {
     className: "table-dark"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "File Name"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "Download"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("th", null, "View"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tbody", null, items.map((item, index) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("tr", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
-  }, index === items.length - 1 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, item.file_name, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, item.id === currentID && submitting && !loading ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, item.file_name, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "badge text-bg-success",
     style: {
       marginLeft: "0.5rem"
@@ -12007,7 +12030,7 @@ function BacklinksExplorer() {
   }, "New")) : item.file_name), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: download[index],
+    href: item.csv_url,
     className: "btn btn-link",
     download: item.file_name
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
