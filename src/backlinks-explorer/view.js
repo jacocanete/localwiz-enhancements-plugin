@@ -5,7 +5,6 @@ import Papa from "papaparse";
 import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import { flattenData } from "./utils/flattenData";
-import { fixCsvData, generateCsvUrls } from "./utils/csvUtils";
 
 const block = document.querySelectorAll(".backlinks-explorer-update");
 
@@ -28,6 +27,7 @@ function BacklinksExplorer() {
 	const [currentID, setCurrentID] = useState(0);
 	const [download, setDownload] = useState({});
 	const [submitting, setSubmitting] = useState(false);
+	const [loadingResults, setLoadingResults] = useState(false);
 
 	useEffect(() => {
 		getSavedResults();
@@ -48,6 +48,7 @@ function BacklinksExplorer() {
 
 	async function getSavedResults() {
 		try {
+			setLoadingResults(true);
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`,
 				{
@@ -382,7 +383,7 @@ function BacklinksExplorer() {
 				</form>
 				{error && <div className="alert alert-danger">{error}</div>}
 
-				{items && items.length > 0 && (
+				{items && items.length > 0 ? (
 					<>
 						{submitting && !loading && (
 							<span>
@@ -439,42 +440,16 @@ function BacklinksExplorer() {
 							</table>
 						</div>
 					</>
+				) : (
+					<div className="d-flex align-items-center gap-2">
+						<span
+							className="spinner-border spinner-border-sm"
+							role="status"
+							aria-hidden="true"
+						></span>
+						Loading saved results...
+					</div>
 				)}
-
-				{/* <div className="container collapse table-responsive" id="urlCollapse">
-					<table className="table table-striped table-hover mt-3 caption-top">
-						<caption>Download the CSV for a better view.</caption>
-						<thead className="table-dark">
-							<tr>
-								{items[0] &&
-									Object.keys(items[0]).map((key, index) => (
-										<th key={index}>{key}</th>
-									))}
-							</tr>
-						</thead>
-						<tbody>
-							{items.map((item, index) => (
-								<tr key={index}>
-									{Object.values(item).map((value, i) => (
-										<td key={i} className="text-truncate">
-											{typeof value === "string" && value.startsWith("http") ? (
-												<a href={value} target="_blank" rel="noreferrer">
-													{value}
-												</a>
-											) : typeof value === "boolean" ? (
-												value.toString()
-											) : typeof value === "object" ? (
-												JSON.stringify(value)
-											) : (
-												value
-											)}
-										</td>
-									))}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div> */}
 			</div>
 		</div>
 	);
