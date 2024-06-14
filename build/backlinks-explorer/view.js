@@ -11994,9 +11994,11 @@ function BacklinksExplorer() {
     download: item.file_name
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "btn btn-link"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null))))))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: `${site_url.root_url}/results/?id=${item.id}&type=backlinks-explorer`,
+    className: "btn btn-link",
+    target: "_blank"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)), " "))))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center gap-2"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     className: "spinner-border spinner-border-sm",

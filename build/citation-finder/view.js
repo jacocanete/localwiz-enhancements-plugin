@@ -11768,7 +11768,7 @@ function CitationFinder() {
     "aria-hidden": "true"
   }) : "Submit"))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-danger"
-  }, error), items && items.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+  }, error), items && items.length > 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
     className: "mb-2"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "table-responsive"
@@ -11791,9 +11791,17 @@ function CitationFinder() {
     download: item.file_name
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
-    className: "btn btn-link"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null)))))))))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+    href: `${site_url.root_url}/results/?id=${item.id}&type=citation-finder`,
+    className: "btn btn-link",
+    target: "_blank"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null))))))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "d-flex align-items-center gap-2"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "spinner-border spinner-border-sm",
+    role: "status",
+    "aria-hidden": "true"
+  }), "Loading saved results...")));
 }
 })();
 
