@@ -28,6 +28,7 @@ class LW_Enhancements_Loader
         add_action('admin_init', array($this->admin, 'lw_enhancements_settings'));
         add_action('user_register', array($this->admin, 'lw_enhancements_user_meta')); // use 'user_register' instead of 'admin_init'
         add_action('activate_lw-enhancements/lw-enhancements.php', array($this->admin, 'init_db'));
+        add_action('admin_init', array($this->admin, 'zeroBalance'));
     }
 
     private function define_public_hooks()

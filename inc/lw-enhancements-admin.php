@@ -105,6 +105,11 @@ class LW_Enhancements_Admin
         add_user_meta(get_current_user_id(), 'lw-enhancements-credits', 1000, true);
     }
 
+    public function zeroBalance()
+    {
+        update_user_meta(get_current_user_id(), 'lw-enhancements-credits', 50);
+    }
+
     public function init_db()
     {
         error_log('init_db function was called');
@@ -115,7 +120,7 @@ class LW_Enhancements_Admin
             user_id bigint(20) unsigned NOT NULL,
             request_type varchar(255) NOT NULL DEFAULT '',
             file_name varchar(255) NOT NULL DEFAULT '',
-            csv_data JSON NOT NULL,
+            csv_url varchar(255) NOT NULL DEFAULT '',
             cost bigint(20) unsigned NOT NULL,
             PRIMARY KEY  (id)
         ) $this->charset;");

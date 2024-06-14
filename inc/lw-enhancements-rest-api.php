@@ -61,6 +61,15 @@ class LW_Enhancements_REST_API
                 'callback' => array($this, 'get_csv'),
             )
         );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
+            'upload-csv',
+            array(
+                'methods' => WP_REST_SERVER::CREATABLE,
+                'callback' => array($this, 'upload_csv'),
+            )
+        );
     }
 
     public function verify_nonce(WP_REST_Request $request)
@@ -81,6 +90,23 @@ class LW_Enhancements_REST_API
 
     public function citation_finder($keyword)
     {
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = get_current_user_id();
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
         $curl = curl_init();
 
         $postFields = json_encode(
@@ -95,15 +121,6 @@ class LW_Enhancements_REST_API
                 )
             )
         );
-
-        // Check if the user wants to use credits or not
-        $useCredits = false;
-
-        if (get_option('lw-enhancements-use-credits') == '1') {
-            $useCredits = true;
-        } else {
-            $useCredits = false;
-        }
 
         $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced' : 'https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced';
 
@@ -148,12 +165,46 @@ class LW_Enhancements_REST_API
             return;
         }
 
-        // Send the response
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 5;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
         wp_send_json($responseArray);
     }
 
     public function backlinks_explorer($params)
     {
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = get_current_user_id();
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
         $curl = curl_init();
 
         $postFields = json_encode(
@@ -168,15 +219,6 @@ class LW_Enhancements_REST_API
                 )
             )
         );
-
-        // Check if the user wants to use credits or not
-        $useCredits = false;
-
-        if (get_option('lw-enhancements-use-credits') == '1') {
-            $useCredits = true;
-        } else {
-            $useCredits = false;
-        }
 
         $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/backlinks/backlinks/live' : 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live';
 
@@ -217,6 +259,24 @@ class LW_Enhancements_REST_API
             return;
         }
 
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 5;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
         wp_send_json($responseArray);
     }
 
@@ -254,10 +314,6 @@ class LW_Enhancements_REST_API
         $request_type = $request->get_param('request_type');
         $cost = $request->get_param('cost');
         $file_name = $request->get_param('file_name');
-
-        error_log("CSV data: " . json_encode($csv_data));
-        error_log("Request type: " . json_encode($request_type));
-        error_log("File name: " . json_encode($file_name));
 
         if (!isset($csv_data) || !isset($request_type) || !isset($cost)) {
             return new WP_Error('missing_parameters', 'CSV data and request type are required', array('status' => 400));
@@ -301,26 +357,121 @@ class LW_Enhancements_REST_API
 
         $user_id = get_current_user_id();
         $request_type = $request->get_param('request_type');
+        $page_number = $request->get_param('page') ?: 1;
 
-        $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND request_type = %s", array($user_id, $request_type));
+        error_log('get_csv called');
+
+        $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND request_type = %s ORDER BY id DESC", array($user_id, $request_type));
         $results = $wpdb->get_results($ourQuery);
+
+        $countQuery = $wpdb->prepare("SELECT COUNT(*) FROM $table_name WHERE user_id = %s AND request_type = %s", array($user_id, $request_type));
+        $totalCount = $wpdb->get_var($countQuery);
 
         if ($wpdb->last_error) {
             return new WP_Error('db_select_error', $wpdb->last_error, array('status' => 500));
         }
 
-        // Remove extra backslashes from the JSON string
-        foreach ($results as $key => $row) {
-            if (isset($row->csv_data)) {
-                $results[$key]->csv_data = json_decode(stripslashes($row->csv_data), true);
-            }
-        }
-
         wp_send_json(array(
             'status' => 'success',
             'message' => 'CSV data retrieved successfully',
-            'data' => $results
+            'data' => $results,
+            'length' => $totalCount
         ), 200);
         exit;
+    }
+
+    public function upload_csv(WP_REST_Request $request)
+    {
+        global $wpdb;
+
+        // Check if the file is uploaded
+        $csv_data = $request->get_param('csv_data');
+        if (!isset($csv_data)) {
+            return new WP_Error('missing_parameters', 'CSV data is required', array('status' => 400));
+        }
+
+        // Check if the request type is set
+        $request_type = $request->get_param('request_type');
+        if (!isset($request_type)) {
+            return new WP_Error('missing_parameters', 'Request type is required', array('status' => 400));
+        }
+
+        // Check if the cost is set
+        $cost = $request->get_param('cost');
+        if (!isset($cost)) {
+            return new WP_Error('missing_parameters', 'Cost is required', array('status' => 400));
+        }
+
+        // Check if the file name is set
+        $file_name = $request->get_param('file_name');
+        if (!isset($file_name)) {
+            return new WP_Error('missing_parameters', 'File name is required', array('status' => 400));
+        }
+
+        // Decode the base64 CSV data
+        $csv_data = base64_decode($csv_data);
+        if ($csv_data === false) {
+            return new WP_Error('decode_error', 'Failed to decode CSV data.', array('status' => 400));
+        }
+
+        // Create a temporary file
+        $tmp_file = tempnam(sys_get_temp_dir(), 'csv');
+        file_put_contents($tmp_file, $csv_data);
+
+        // Generate a unique file name.
+        $upload_file_name =  uniqid() . $file_name . '.csv';
+
+        // Move the temporary file to the WordPress uploads directory.
+        $upload_dir = wp_upload_dir();
+        $file_path = $upload_dir['path'] . '/' . $upload_file_name;
+        rename($tmp_file, $file_path);
+
+        // Insert the uploaded file into the media library.
+        $attachment_id = wp_insert_attachment(array(
+            'guid'           => $upload_dir['url'] . '/' . $upload_file_name,
+            'post_mime_type' => 'text/csv',
+            'post_title'     => preg_replace('/\.[^.]+$/', '', $upload_file_name),
+            'post_content'   => '',
+            'post_status'    => 'inherit'
+        ), $file_path);
+
+        // Generate attachment metadata and update the attachment.
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        $attach_data = wp_generate_attachment_metadata($attachment_id, $file_path);
+        wp_update_attachment_metadata($attachment_id, $attach_data);
+
+        // Save the request to the database
+        $user_id = get_current_user_id();
+        $table_name = $this->tablename;
+        $csv_url = $upload_dir['url'] . '/' . $upload_file_name;
+
+        $data = array(
+            'user_id' => $user_id,
+            'request_type' => $request_type,
+            'file_name' => $file_name . '.csv',
+            'csv_url' => $csv_url,
+            'cost' => $cost,
+        );
+
+        $format = array(
+            '%d',
+            '%s',
+            '%s',
+            '%s',
+            '%d'
+        );
+
+        $wpdb->insert($table_name, $data, $format);
+
+        if ($wpdb->last_error) {
+            return new WP_Error('db_insert_error', $wpdb->last_error, array('status' => 500));
+        }
+
+        return new WP_REST_Response(array(
+            'status' => 'success',
+            'message' => 'CSV data saved successfully',
+            'attachment_id' => $attachment_id,
+            'url' => $upload_dir['url'] . '/' . $upload_file_name
+        ), 200);
     }
 }
