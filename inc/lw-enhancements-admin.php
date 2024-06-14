@@ -105,10 +105,10 @@ class LW_Enhancements_Admin
         add_user_meta(get_current_user_id(), 'lw-enhancements-credits', 1000, true);
     }
 
-    public function zeroBalance()
-    {
-        update_user_meta(get_current_user_id(), 'lw-enhancements-credits', 50);
-    }
+    // public function zeroBalance()
+    // {
+    //     update_user_meta(get_current_user_id(), 'lw-enhancements-credits', 50);
+    // }
 
     public function init_db()
     {
