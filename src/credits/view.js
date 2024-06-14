@@ -31,20 +31,15 @@ function Credits() {
 				},
 			);
 
-			console.log(response);
-
-			if (response.status !== "200") {
-				console.error("Error fetching data");
+			if (response.status !== 200) {
 				setLoading(false);
 				return;
 			} else {
 				setCredits(response.data.balance);
 			}
 
-			console.log(response);
 			setLoading(false);
 		} catch (error) {
-			console.error(error);
 			setLoading(false);
 		}
 	};
