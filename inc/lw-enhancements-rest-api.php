@@ -370,6 +370,8 @@ class LW_Enhancements_REST_API
         $id = $request->get_param('id');
         // $page_number = $request->get_param('page') ?: 1;
 
+        error_log('id: ' . $id);
+
         if ($id) {
             $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND id = %s", array($user_id, $id));
             $results = $wpdb->get_results($ourQuery);
