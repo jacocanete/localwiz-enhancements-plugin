@@ -430,9 +430,13 @@ function BacklinksExplorer() {
 												</a>
 											</td>
 											<td className="text-truncate">
-												<button className="btn btn-link">
+												<a
+													href={`${site_url.root_url}/results/?id=${item.id}&type=backlinks-explorer`}
+													className="btn btn-link"
+													target="_blank"
+												>
 													<FaEye />
-												</button>
+												</a>{" "}
 											</td>
 										</tr>
 									))}

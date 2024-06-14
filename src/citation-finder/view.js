@@ -197,7 +197,7 @@ function CitationFinder() {
 					</div>
 				</form>
 				{error && <div className="alert alert-danger">{error}</div>}
-				{items && items.length > 0 && (
+				{items && items.length > 0 ? (
 					<>
 						{submitting && !loading && (
 							<span>
@@ -244,9 +244,13 @@ function CitationFinder() {
 												</a>
 											</td>
 											<td className="text-truncate">
-												<button className="btn btn-link">
+												<a
+													href={`${site_url.root_url}/results/?id=${item.id}&type=citation-finder`}
+													className="btn btn-link"
+													target="_blank"
+												>
 													<FaEye />
-												</button>
+												</a>
 											</td>
 										</tr>
 									))}
@@ -254,6 +258,15 @@ function CitationFinder() {
 							</table>
 						</div>
 					</>
+				) : (
+					<div className="d-flex align-items-center gap-2">
+						<span
+							className="spinner-border spinner-border-sm"
+							role="status"
+							aria-hidden="true"
+						></span>
+						Loading saved results...
+					</div>
 				)}
 				{/* <div className="container collapse table-responsive" id="urlCollapse">
 					<table className="table table-striped table-hover mt-3 caption-top">
