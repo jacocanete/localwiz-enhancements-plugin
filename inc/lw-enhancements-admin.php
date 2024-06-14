@@ -113,6 +113,7 @@ class LW_Enhancements_Admin
     public function init_db()
     {
         error_log('init_db function was called');
+        error_log($this->tablename);
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta("CREATE TABLE $this->tablename (

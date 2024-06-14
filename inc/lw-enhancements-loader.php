@@ -26,8 +26,8 @@ class LW_Enhancements_Loader
         $this->admin = new LW_Enhancements_Admin();
         add_action('admin_menu', array($this->admin, 'lw_enhancements_menu'));
         add_action('admin_init', array($this->admin, 'lw_enhancements_settings'));
-        add_action('activate_lw-enhancements/lw-enhancements.php', array($this->admin, 'lw_enhancements_user_meta')); // use 'user_register' instead of 'admin_init'
-        add_action('activate_lw-enhancements/lw-enhancements.php', array($this->admin, 'init_db'));
+        add_action('admin_init', array($this->admin, 'lw_enhancements_user_meta')); // use 'user_register' instead of 'admin_init'
+        add_action('admin_init', array($this->admin, 'init_db'));
         // add_action('admin_init', array($this->admin, 'zeroBalance'));
     }
 
