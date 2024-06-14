@@ -33,7 +33,7 @@ function Credits() {
 
 			console.log(response);
 
-			if (response.statusText !== "OK") {
+			if (response.status !== "200") {
 				console.error("Error fetching data");
 				setLoading(false);
 				return;
