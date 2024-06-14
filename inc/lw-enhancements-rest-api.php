@@ -74,6 +74,8 @@ class LW_Enhancements_REST_API
 
     public function verify_nonce(WP_REST_Request $request)
     {
+        error_log('verify_nonce called');
+
         $headers = $request->get_headers();
         if (isset($headers['x_wp_nonce'])) {
             $nonce = $headers['x_wp_nonce'][0];
@@ -90,6 +92,7 @@ class LW_Enhancements_REST_API
 
     public function citation_finder($keyword)
     {
+        error_log('citation-finder called');
 
         // Check if the user wants to use credits or not
         $useCredits = get_option('lw-enhancements-use-credits') == '1';
@@ -188,6 +191,7 @@ class LW_Enhancements_REST_API
 
     public function backlinks_explorer($params)
     {
+        error_log('backlinks_explorer called');
 
         // Check if the user wants to use credits or not
         $useCredits = get_option('lw-enhancements-use-credits') == '1';
@@ -282,6 +286,8 @@ class LW_Enhancements_REST_API
 
     public function get_credits_balance()
     {
+        error_log('get_credits_balance called');
+
         $user_id = get_current_user_id();
         $meta_key = 'lw-enhancements-credits';
         $credits_balance = get_user_meta($user_id, $meta_key, true);
@@ -308,6 +314,8 @@ class LW_Enhancements_REST_API
 
     public function save_csv(WP_REST_Request $request)
     {
+        error_log('save_csv called');
+
         global $wpdb;
 
         $csv_data = $request->get_param('csv_data');
@@ -351,15 +359,32 @@ class LW_Enhancements_REST_API
 
     public function get_csv(WP_REST_Request $request)
     {
+        error_log('get_csv called');
+
         global $wpdb;
 
         $table_name = $this->tablename;
 
         $user_id = get_current_user_id();
         $request_type = $request->get_param('request_type');
-        $page_number = $request->get_param('page') ?: 1;
+        $id = $request->get_param('id');
+        // $page_number = $request->get_param('page') ?: 1;
 
-        error_log('get_csv called');
+        if ($id) {
+            $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND id = %s", array($user_id, $id));
+            $results = $wpdb->get_results($ourQuery);
+
+            if ($wpdb->last_error) {
+                return new WP_Error('db_select_error', $wpdb->last_error, array('status' => 500));
+            }
+
+            wp_send_json(array(
+                'status' => 'success',
+                'message' => 'CSV data retrieved successfully',
+                'data' => $results
+            ), 200);
+            exit;
+        }
 
         $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND request_type = %s ORDER BY id DESC", array($user_id, $request_type));
         $results = $wpdb->get_results($ourQuery);
