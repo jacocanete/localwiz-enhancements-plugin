@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import Papa from "papaparse";
@@ -21,13 +21,46 @@ function CitationFinder() {
 	const [viewTable, setViewTable] = useState(false);
 	const [items, setItems] = useState([]);
 	const [time, setTime] = useState(0);
+	const [currentID, setCurrentID] = useState(0);
+	const [credits, setCredits] = useState(0);
+	const [submitting, setSubmitting] = useState(false);
 
-	const tooltipTriggerList = [].slice.call(
-		document.querySelectorAll("#tooltipButton"),
-	);
-	const tooltipList = [...tooltipTriggerList].map(
-		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
-	);
+	useEffect(() => {
+		getSavedResults();
+	}, []);
+
+	async function getSavedResults() {
+		try {
+			const response = await axios.get(
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`,
+				{
+					headers: {
+						"X-WP-Nonce": site_url.nonce,
+					},
+					params: {
+						request_type: "citation-finder",
+					},
+				},
+			);
+
+			if (!response.statusText === "OK") {
+				setError(`Unable to fetch saved results: ${error.message}`);
+				setLoading(false);
+				return;
+			} else {
+				const data = response.data;
+				const items = data.data;
+				setItems(items);
+				setCurrentID(items[0].id);
+			}
+
+			setLoading(false);
+			setError(null);
+		} catch (error) {
+			setError(`Unable to fetch saved results: ${error.message}`);
+			setLoading(false);
+		}
+	}
 
 	async function getResults(keyword) {
 		try {
@@ -74,14 +107,46 @@ function CitationFinder() {
 					date.getMonth() + 1
 				}-${date.getDate()}`;
 
-				setFilename(`${formattedDate} ${formData.keyword}.csv`);
+				let reader = new FileReader();
+				reader.readAsDataURL(csvBlob);
+				reader.onloadend = function () {
+					let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
+
+					axios
+						.post(
+							`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`,
+							{
+								csv_data: base64data,
+								file_name: `${formattedDate}-${formData.keyword}`,
+								cost: data.cost,
+								request_type: "citation-finder",
+							},
+							{
+								headers: {
+									"X-WP-Nonce": site_url.nonce,
+									"Content-Type": "application/json",
+								},
+							},
+						)
+						.then((response) => {
+							getSavedResults();
+							setSubmitting(true);
+						})
+						.catch((error) => {
+							setError("Error uploading file:", error.response.data);
+						});
+				};
+
 				setTime(parseFloat(data.time));
-				setItems(csvData);
-				setResults(csvUrl);
-				setLoading(false);
 			}
 		} catch (e) {
+			if (e.response.data.code === "balance_error") {
+				setError("Insufficient credits to complete this task.");
+				setLoading(false);
+				return;
+			}
 			setError(`Unable to fetch data: ${e.message}`);
+			console.log(e);
 			setLoading(false);
 		}
 	}
@@ -93,7 +158,7 @@ function CitationFinder() {
 		});
 	}
 
-	function handleSubmit(e) {
+	async function handleSubmit(e) {
 		e.preventDefault();
 		getResults(formData.keyword);
 	}
@@ -132,50 +197,65 @@ function CitationFinder() {
 					</div>
 				</form>
 				{error && <div className="alert alert-danger">{error}</div>}
-				{results && (
+				{items && items.length > 0 && (
 					<>
-						<span>
-							This task took <strong>{time}</strong>{" "}
-							{time === 1 ? "second" : "seconds"} to complete.
-						</span>
-						<hr />
-						<div className="mt-3 d-flex flex-row justify-content-center align-items-center">
-							<span>{filename}</span>
-							<a
-								href={results}
-								download={filename}
-								className="btn btn-link"
-								data-bs-placement="top"
-								data-bs-title="Download CSV"
-								id="tooltipButton"
-							>
-								<FaDownload />
-							</a>
-							<br />
-							<button
-								className="btn btn-link"
-								// onClick={(e) => {
-								// 	e.preventDefault();
-								// 	if (viewTable) {
-								// 		setViewTable(false);
-								// 	} else {
-								// 		setViewTable(true);
-								// 	}
-								// }}
-								data-bs-toggle="collapse"
-								data-bs-target="#urlCollapse"
-								aria-expanded="false"
-								aria-controls="urlCollapse"
-								data-bs-placement="top"
-								data-bs-title="Preview CSV"
-								id="tooltipButton"
-							>
-								<FaEye />
-							</button>
+						{submitting && !loading && (
+							<span>
+								This task took <strong>{time}</strong>{" "}
+								{time === 1 ? "second" : "seconds"} to complete.
+							</span>
+						)}
+						<hr className="mb-2" />
+						<div className="table-responsive">
+							<table className="table table-striped table-hover mt-3 caption-top">
+								<caption>Download the CSV for a better view.</caption>
+								<thead className="table-dark">
+									<tr>
+										<th>File Name</th>
+										<th>Download</th>
+										<th>View</th>
+									</tr>
+								</thead>
+								<tbody>
+									{items.map((item, index) => (
+										<tr>
+											<td className="text-truncate">
+												{item.id === currentID && submitting && !loading ? (
+													<>
+														{item.file_name}
+														<span
+															className="badge text-bg-success"
+															style={{ marginLeft: "0.5rem" }}
+														>
+															New
+														</span>
+													</>
+												) : (
+													item.file_name
+												)}
+											</td>
+											<td className="text-truncate">
+												<a
+													href={item.csv_url}
+													className="btn btn-link"
+													download={item.file_name}
+												>
+													<FaDownload />
+												</a>
+											</td>
+											<td className="text-truncate">
+												<button className="btn btn-link">
+													<FaEye />
+												</button>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
 						</div>
 					</>
 				)}
-				<div className="container collapse table-responsive" id="urlCollapse">
+				{/* <div className="container collapse table-responsive" id="urlCollapse">
 					<table className="table table-striped table-hover mt-3 caption-top">
 						<caption>Download the CSV for a better view.</caption>
 						<thead className="table-dark">
@@ -208,7 +288,7 @@ function CitationFinder() {
 							))}
 						</tbody>
 					</table>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);

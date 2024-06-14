@@ -1,6 +1,7 @@
 import react, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
+import { TiRefresh } from "react-icons/ti";
 
 const block = document.querySelectorAll(".credits-update");
 
@@ -15,42 +16,45 @@ function Credits() {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		const fetchCredits = async () => {
-			try {
-				setLoading(true);
-				const response = await axios.get(
-					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/credits`,
-					{
-						headers: {
-							"X-WP-Nonce": site_url.nonce,
-						},
-					},
-				);
-
-				if (response.statusText !== "OK") {
-					console.error("Error fetching data");
-					setLoading(false);
-					return;
-				} else {
-					setCredits(response.data.balance);
-				}
-
-				console.log(response);
-				setLoading(false);
-			} catch (error) {
-				console.error(error);
-				setLoading(false);
-			}
-		};
-
 		fetchCredits();
 	}, []);
+
+	const fetchCredits = async () => {
+		try {
+			setLoading(true);
+			const response = await axios.get(
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/credits`,
+				{
+					headers: {
+						"X-WP-Nonce": site_url.nonce,
+					},
+				},
+			);
+
+			if (response.statusText !== "OK") {
+				console.error("Error fetching data");
+				setLoading(false);
+				return;
+			} else {
+				setCredits(response.data.balance);
+			}
+
+			console.log(response);
+			setLoading(false);
+		} catch (error) {
+			console.error(error);
+			setLoading(false);
+		}
+	};
 
 	return (
 		<div className="container">
 			<div className="p-4 border shadow inner">
 				<div className="row">
 					<div className="col d-flex justify-content-start align-items-center gap-2">
+						<button className="btn btn-primary" onClick={fetchCredits}>
+							Refresh
+						</button>
 						<span>Credit Balance:</span>
 						{loading ? (
 							<span
@@ -60,7 +64,7 @@ function Credits() {
 							></span>
 						) : (
 							<span>
-								${typeof credits === "number" ? credits.toFixed(2) : credits}
+								${typeof credits === "number" ? credits.toFixed(4) : credits}
 							</span>
 						)}
 					</div>

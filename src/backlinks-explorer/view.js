@@ -25,12 +25,18 @@ function BacklinksExplorer() {
 	const [error, setError] = useState(null);
 	const [items, setItems] = useState([]);
 	const [time, setTime] = useState(0);
+	const [currentID, setCurrentID] = useState(0);
 	const [download, setDownload] = useState({});
+	const [submitting, setSubmitting] = useState(false);
+
+	useEffect(() => {
+		getSavedResults();
+	}, []);
 
 	function handleSubmit(e) {
 		e.preventDefault();
 		setError(null);
-		submitResults({
+		getResults({
 			formData,
 			mode,
 			subdomains,
@@ -54,22 +60,26 @@ function BacklinksExplorer() {
 				},
 			);
 
-			const data = response.data.data;
+			if (!response.statusText === "OK") {
+				setError(`Unable to fetch saved results: ${error.message}`);
+				setLoading(false);
+				return;
+			} else {
+				const data = response.data;
+				const items = data.data;
+				setItems(items);
+				setCurrentID(items[0].id);
+			}
 
-			const fixedData = data.map((item) => fixCsvData(item.csv_data));
-
-			const url = generateCsvUrls(fixedData);
-
-			setItems(data);
-			setDownload(url);
 			setLoading(false);
+			setError(null);
 		} catch (error) {
-			setError(`Unable to fetch data: ${error.message}`);
+			setError(`Unable to fetch saved results: ${error.message}`);
 			setLoading(false);
 		}
 	}
 
-	async function submitResults(params) {
+	async function getResults(params) {
 		try {
 			const {
 				formData,
@@ -189,33 +199,53 @@ function BacklinksExplorer() {
 					return newItem;
 				});
 
+				let flatData = flattenData(csvData);
+
+				let csv = Papa.unparse(flatData);
+
+				let csvBlob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+				let csvUrl = URL.createObjectURL(csvBlob);
+
 				let date = new Date();
 				let formattedDate = `${date.getFullYear()}-${
 					date.getMonth() + 1
 				}-${date.getDate()}`;
 
+				let url = new URL(formData.target);
+				let formattedHostName = url.hostname.replace("www.", "");
+
+				let reader = new FileReader();
+				reader.readAsDataURL(csvBlob);
+				reader.onloadend = function () {
+					let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
+
+					axios
+						.post(
+							`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`,
+							{
+								csv_data: base64data,
+								file_name: `${formattedDate}-${formattedHostName}`,
+								cost: data.cost,
+								request_type: "backlinks-explorer",
+							},
+							{
+								headers: {
+									"X-WP-Nonce": site_url.nonce,
+									"Content-Type": "application/json",
+								},
+							},
+						)
+						.then((response) => {
+							getSavedResults();
+							setSubmitting(true);
+						})
+						.catch((error) => {
+							setError("Error uploading file:", error.response.data);
+						});
+				};
+
 				setTime(parseFloat(data.time));
-
-				const saveData = await axios.post(
-					`${site_url.root_url}/wp-json/localwiz-enhancements/v1/save-csv`,
-					{
-						csv_data: csvData,
-						request_type: "backlinks-explorer",
-						cost: data.tasks[0].cost,
-						file_name: formattedDate + " " + formData.target + ".csv",
-					},
-					{
-						headers: {
-							"X-WP-Nonce": site_url.nonce,
-							"Content-Type": "application/json",
-						},
-					},
-				);
-
-				if (saveData.statusText === "OK") {
-					console.log("Data saved");
-					await getSavedResults();
-				}
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);
@@ -224,7 +254,7 @@ function BacklinksExplorer() {
 	}
 
 	return (
-		<div className="container mb-5 h-75">
+		<div className="container mb-5">
 			<div className="p-4 border shadow inner">
 				<form onSubmit={handleSubmit}>
 					<div className="row mb-3">
@@ -354,12 +384,14 @@ function BacklinksExplorer() {
 
 				{items && items.length > 0 && (
 					<>
-						<span>
-							This task took <strong>{time}</strong>{" "}
-							{time === 1 ? "second" : "seconds"} to complete.
-						</span>
+						{submitting && !loading && (
+							<span>
+								This task took <strong>{time}</strong>{" "}
+								{time === 1 ? "second" : "seconds"} to complete.
+							</span>
+						)}
 						<hr className="mb-2" />
-						<div style={{ maxHeight: "30rem" }} className="table-responsive">
+						<div className="table-responsive">
 							<table className="table table-striped table-hover mt-3 caption-top">
 								<caption>Download the CSV for a better view.</caption>
 								<thead className="table-dark">
@@ -373,7 +405,7 @@ function BacklinksExplorer() {
 									{items.map((item, index) => (
 										<tr>
 											<td className="text-truncate">
-												{index === items.length - 1 ? (
+												{item.id === currentID && submitting && !loading ? (
 													<>
 														{item.file_name}
 														<span
@@ -389,7 +421,7 @@ function BacklinksExplorer() {
 											</td>
 											<td className="text-truncate">
 												<a
-													href={download[index]}
+													href={item.csv_url}
 													className="btn btn-link"
 													download={item.file_name}
 												>
