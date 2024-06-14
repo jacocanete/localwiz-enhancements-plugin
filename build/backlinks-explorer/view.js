@@ -1,47 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/backlinks-explorer/utils/csvUtils.js":
-/*!**************************************************!*\
-  !*** ./src/backlinks-explorer/utils/csvUtils.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   fixCsvData: () => (/* binding */ fixCsvData),
-/* harmony export */   generateCsvUrls: () => (/* binding */ generateCsvUrls)
-/* harmony export */ });
-/* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
-/* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _flattenData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./flattenData */ "./src/backlinks-explorer/utils/flattenData.js");
-
-
-function fixCsvData(csvData) {
-  let firstInstance = true;
-  return csvData.map(csvItem => {
-    const newItem = {
-      ...csvItem,
-      target: firstInstance ? csvItem.target : ""
-    };
-    firstInstance = false;
-    return newItem;
-  });
-}
-function generateCsvUrls(fixedData) {
-  return fixedData.map(item => {
-    const flattenedItem = (0,_flattenData__WEBPACK_IMPORTED_MODULE_1__.flattenData)(item);
-    const csv = papaparse__WEBPACK_IMPORTED_MODULE_0___default().unparse(flattenedItem);
-    const csvBlob = new Blob([csv], {
-      type: "text/csv;charset=utf-8;"
-    });
-    return [URL.createObjectURL(csvBlob)];
-  });
-}
-
-/***/ }),
-
 /***/ "./src/backlinks-explorer/utils/flattenData.js":
 /*!*****************************************************!*\
   !*** ./src/backlinks-explorer/utils/flattenData.js ***!
@@ -11670,13 +11629,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
 /* harmony import */ var _utils_flattenData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/flattenData */ "./src/backlinks-explorer/utils/flattenData.js");
-/* harmony import */ var _utils_csvUtils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/csvUtils */ "./src/backlinks-explorer/utils/csvUtils.js");
-
 
 
 
@@ -11704,6 +11661,7 @@ function BacklinksExplorer() {
   const [currentID, setCurrentID] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [submitting, setSubmitting] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const [loadingResults, setLoadingResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     getSavedResults();
   }, []);
@@ -11721,7 +11679,8 @@ function BacklinksExplorer() {
   }
   async function getSavedResults() {
     try {
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
+      setLoadingResults(true);
+      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         },
@@ -11823,7 +11782,7 @@ function BacklinksExplorer() {
       } else if (mode === "3") {
         modeValue = "one_per_anchor";
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -11863,7 +11822,7 @@ function BacklinksExplorer() {
         reader.onloadend = function () {
           let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
 
-          axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
+          axios__WEBPACK_IMPORTED_MODULE_4__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
             csv_data: base64data,
             file_name: `${formattedDate}-${formattedHostName}`,
             cost: data.cost,
@@ -12012,7 +11971,7 @@ function BacklinksExplorer() {
     "aria-hidden": "true"
   }) : "Submit")))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-danger"
-  }, error), items && items.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
+  }, error), items && items.length > 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
     className: "mb-2"
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "table-responsive"
@@ -12033,11 +11992,17 @@ function BacklinksExplorer() {
     href: item.csv_url,
     className: "btn btn-link",
     download: item.file_name
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     className: "btn btn-link"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaEye, null)))))))))));
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null))))))))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "d-flex align-items-center gap-2"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "spinner-border spinner-border-sm",
+    role: "status",
+    "aria-hidden": "true"
+  }), "Loading saved results...")));
 }
 })();
 
