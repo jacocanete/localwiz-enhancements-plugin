@@ -51,7 +51,9 @@ function CitationFinder() {
 				const data = response.data;
 				const items = data.data;
 				setItems(items);
-				setCurrentID(items[0].id);
+				if (items.length > 0) {
+					setCurrentID(items[0].id);
+				}
 			}
 
 			setLoading(false);
@@ -258,6 +260,8 @@ function CitationFinder() {
 							</table>
 						</div>
 					</>
+				) : items && items.length === 0 ? (
+					<div className="alert alert-info">No saved results found.</div>
 				) : (
 					<div className="d-flex align-items-center gap-2">
 						<span

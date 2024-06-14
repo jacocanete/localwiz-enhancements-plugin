@@ -472,6 +472,9 @@ class LW_Enhancements_REST_API
         $table_name = $this->tablename;
         $csv_url = $upload_dir['url'] . '/' . $upload_file_name;
 
+        // Ensure the URL is HTTPS
+        $csv_url = str_replace("http://", "https://", $csv_url);
+
         $data = array(
             'user_id' => $user_id,
             'request_type' => $request_type,

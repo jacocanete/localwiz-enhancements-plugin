@@ -43,6 +43,10 @@ function Results() {
 					return;
 				} else {
 					const data = response.data;
+					if (data.data.length === 0) {
+						setError("No results found in the database.");
+						return;
+					}
 					const result = data.data[0];
 					setResult(result);
 					const parsedResult = Papa.parse(result.csv_url, {

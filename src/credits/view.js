@@ -31,6 +31,8 @@ function Credits() {
 				},
 			);
 
+			console.log(response);
+
 			if (response.statusText !== "OK") {
 				console.error("Error fetching data");
 				setLoading(false);
