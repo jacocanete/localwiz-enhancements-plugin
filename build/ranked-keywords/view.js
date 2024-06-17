@@ -12974,6 +12974,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const block = document.querySelectorAll(".ranked-keywords-update");
 block.forEach(function (el) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default().render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RankedKeywords, null), el);
@@ -12995,6 +12996,8 @@ function RankedKeywords() {
   const [language, setLanguage] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("en");
   const [historicalSerpMode, setHistoricalSerpMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("live");
   const allLanguages = _utils_locations__WEBPACK_IMPORTED_MODULE_3__["default"];
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
     setSubmitting(true);
     await getSavedResults();
@@ -13045,7 +13048,10 @@ function RankedKeywords() {
         location,
         historicalSerpMode
       } = params;
-      if (!formData.target || formData.target === "" || /^https?:\/\/|www\./i.test(formData.target)) {
+      const urlPattern = new RegExp("^((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})$",
+      // domain name and extension
+      "i");
+      if (!formData.target || formData.target === "" || !urlPattern.test(formData.target)) {
         setError("Please enter a target URL without 'https://' or 'www.'");
         setLoading(false);
         return;
@@ -13154,14 +13160,19 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "target",
     class: "form-label"
-  }, "Target:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, "Target:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "The domain name of the target website. The domain should be specified without 'https://' and 'www.'"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "text",
     name: "target",
     id: "target",
     className: "form-control",
     placeholder: "ex. localdominator.co",
     onChange: handleChange,
-    disabled: loading
+    disabled: loading,
+    required: true
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "row mb-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -13169,7 +13180,11 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "location",
     class: "form-label"
-  }, "Location:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Location:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Search engine location."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     id: "location",
     value: location,
@@ -13184,7 +13199,11 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "language",
     class: "form-label"
-  }, "Language:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Language:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Search engine language."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     id: "language",
     onChange: e => {
@@ -13200,7 +13219,11 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "historicalSerpMode",
     class: "form-label"
-  }, "Historical SERP Mode:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Historical SERP Mode:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "'live' \u2014 return keywords for which the specified target currently has ranking results in SERP; 'lost' \u2014 return keywords for which the specified target had previously had ranking results in SERP, but didn\u2019t have them during the last check; 'all' \u2014 return both types of keywords."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     id: "historicalSerpMode",
     onChange: e => {
@@ -13249,13 +13272,19 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: item.csv_url,
     className: "btn btn-link",
-    download: item.file_name
+    download: item.file_name,
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Download csv"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: `${site_url.root_url}/results/?id=${item.id}&type=citation-finder`,
     className: "btn btn-link",
-    target: "_blank"
+    target: "_blank",
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "View file in new tab"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

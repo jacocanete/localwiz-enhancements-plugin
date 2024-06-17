@@ -180,7 +180,7 @@ module.exports = window["wp"]["i18n"];
   \****************************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/ranked-keywords","version":"0.0.1","title":"Ranked Keywords","category":"widgets","icon":"admin-network","description":"Finds the Ranked Keywords of any domain or URL that has positions on the SERP.","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"lw-enhancements/ranked-keywords","version":"0.0.2","title":"Ranked Keywords","category":"widgets","icon":"admin-network","description":"Finds the Ranked Keywords of any domain or URL that has positions on the SERP.","example":{},"supports":{"html":false},"textdomain":"lw-enhancements","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php","viewScript":"file:./view.js"}');
 
 /***/ })
 

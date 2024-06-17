@@ -11642,6 +11642,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 const block = document.querySelectorAll(".backlinks-explorer-update");
 block.forEach(function (el) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default().render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(BacklinksExplorer, null), el);
@@ -11662,6 +11663,8 @@ function BacklinksExplorer() {
   const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [submitting, setSubmitting] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [loadingResults, setLoadingResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
     setLoading(true);
     await getSavedResults();
@@ -11725,22 +11728,11 @@ function BacklinksExplorer() {
       let modeValue = "as_is";
       setError(null);
       setLoading(true);
-      const urlPattern = new RegExp("^(https?:\\/\\/)?" +
-      // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+      const urlPattern = new RegExp("^((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})$",
       // domain name and extension
-      "((\\d{1,3}\\.){3}\\d{1,3}))" +
-      // OR ip (v4) address
-      "(\\:\\d+)?" +
-      // port
-      "(\\/[-a-z\\d%_.~+]*)*" +
-      // path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" +
-      // query string
-      "(\\#[-a-z\\d_]*)?$", "i"); // fragment locator
-
+      "i");
       if (!formData.target || formData.target === "" || !urlPattern.test(formData.target)) {
-        setError("Invalid input. Please enter a valid URL including the http:// or https:// prefix.");
+        setError("Please enter a target URL without 'https://' or 'www.'");
         setLoading(false);
         return;
       } else if (internalListLimit < 1 || internalListLimit > 1000) {
@@ -11879,7 +11871,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "target",
     class: "form-label"
-  }, "Target:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, "Target:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "The domain name of the target website. The domain should be specified without 'https://' and 'www.'"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "text",
     className: "form-control",
     name: "target",
@@ -11889,7 +11885,8 @@ function BacklinksExplorer() {
       ...formData,
       target: e.target.value
     }),
-    disabled: loading
+    disabled: loading,
+    required: true
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "row mb-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -11897,7 +11894,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "mode",
     class: "form-label"
-  }, "Mode:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Mode:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Results grouping type."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     "aria-label": "Default select example",
     id: "mode",
@@ -11915,7 +11916,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "includeSubdomains",
     class: "form-label"
-  }, "Include Subdomains:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Include Subdomains:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Indicates if the subdomains of the 'target' will be included in the search."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     "aria-label": "Default select example",
     id: "includeSubdomains",
@@ -11932,7 +11937,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "includeIndirectLinks",
     class: "form-label"
-  }, "Include Indirect Links:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Include Indirect Links:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Indicates if indirect links to the 'target' will be included in the results."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     "aria-label": "Default select example",
     id: "includeIndirectLinks",
@@ -11947,7 +11956,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "backlinkStatusType",
     class: "form-label"
-  }, "Backlink Status Type:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
+  }, "Backlink Status Type:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Set what backlinks to return and count."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
     id: "backlinkStatusType",
     onChange: e => setBacklinkStatusType(e.target.value),
@@ -11965,7 +11978,11 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
     for: "internalListLimit",
     class: "form-label"
-  }, "Internal List Limit:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, "Internal List Limit:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Maximum number of elements within internal arrays."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "number",
     class: "form-control",
     id: "internalListLimit",
@@ -12010,13 +12027,19 @@ function BacklinksExplorer() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: item.csv_url,
     className: "btn btn-link",
-    download: item.file_name
+    download: item.file_name,
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "Download csv"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
     href: `${site_url.root_url}/results/?id=${item.id}&type=backlinks-explorer`,
     className: "btn btn-link",
-    target: "_blank"
+    target: "_blank",
+    "data-bs-toggle": "tooltip",
+    "data-bs-placement": "top",
+    "data-bs-title": "View file in new tab"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)), " "))))))) : !loading && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
