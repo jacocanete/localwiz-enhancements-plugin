@@ -24,17 +24,17 @@ class LW_Enhancements_REST_API
             )
         );
 
-        register_rest_route(
-            'localwiz-enhancements/v1',
-            'citation-finder-test',
-            array(
-                'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'citation_finder_test'),
-            )
-        );
+        // register_rest_route(
+        //     'localwiz-enhancements/v1',
+        //     'citation-finder-test',
+        //     array(
+        //         'methods' => WP_REST_SERVER::READABLE,
+        //         'callback' => array($this, 'citation_finder_test'),
+        //     )
+        // );
 
         // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/citation-finder-test
-        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/citation-finder-test
+        // Prod: http://app.gosystem7.com/wp-json/localwiz-enhancements/v1/citation-finder-test
 
         register_rest_route(
             'localwiz-enhancements/v1',
@@ -46,17 +46,17 @@ class LW_Enhancements_REST_API
             )
         );
 
-        register_rest_route(
-            'localwiz-enhancements/v1',
-            'backlinks-explorer-test',
-            array(
-                'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'backlinks_explorer_test'),
-            )
-        );
+        // register_rest_route(
+        //     'localwiz-enhancements/v1',
+        //     'backlinks-explorer-test',
+        //     array(
+        //         'methods' => WP_REST_SERVER::READABLE,
+        //         'callback' => array($this, 'backlinks_explorer_test'),
+        //     )
+        // );
 
         // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer-test
-        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer-test
+        // Prod: http://app.gosystem7.com/wp-json/localwiz-enhancements/v1/backlinks-explorer-test
 
         register_rest_route(
             'localwiz-enhancements/v1',
@@ -68,17 +68,17 @@ class LW_Enhancements_REST_API
             )
         );
 
-        register_rest_route(
-            'localwiz-enhancements/v1',
-            'ranked-keywords-test',
-            array(
-                'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'ranked_keywords_test'),
-            )
-        );
+        // register_rest_route(
+        //     'localwiz-enhancements/v1',
+        //     'ranked-keywords-test',
+        //     array(
+        //         'methods' => WP_REST_SERVER::READABLE,
+        //         'callback' => array($this, 'ranked_keywords_test'),
+        //     )
+        // );
 
         // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/ranked-keywords-test
-        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/ranked-keywords-test
+        // Prod: http://app.gosystem7.com/wp-json/localwiz-enhancements/v1/ranked-keywords-test
 
         register_rest_route(
             'localwiz-enhancements/v1',
