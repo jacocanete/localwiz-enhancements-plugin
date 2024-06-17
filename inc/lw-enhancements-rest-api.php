@@ -70,7 +70,7 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
-            'ranked-keywords',
+            'ranked-keywords-test',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
                 'callback' => array($this, 'ranked_keywords_test'),
