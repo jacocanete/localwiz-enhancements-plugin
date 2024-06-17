@@ -6,6 +6,7 @@ class LW_Enhancements_Public
     {
         register_block_type(CF_PLUGIN_DIR . '/build/backlinks-explorer');
         register_block_type(CF_PLUGIN_DIR . '/build/citation-finder');
+        register_block_type(CF_PLUGIN_DIR . '/build/ranked-keywords');
         register_block_type(CF_PLUGIN_DIR . '/build/credits');
         register_block_type(CF_PLUGIN_DIR . '/build/results');
     }
@@ -32,6 +33,7 @@ class LW_Enhancements_Public
 
         wp_localize_script('lw-enhancements-backlink-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-citation-finder-view-script', 'site_url', $site_url);
+        wp_localize_script('lw-enhancements-ranked-keywords-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-credits-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-results-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-credits-view-script', 'auth', $auth);
@@ -40,7 +42,7 @@ class LW_Enhancements_Public
 
     function remove_header_footer_css()
     {
-        if (has_block('lw-enhancements/backlinks-explorer') || has_block('lw-enhancements/citation-finder') || has_block('lw-enhancements/credits') || has_block('lw-enhancements/results')) {
+        if (has_block('lw-enhancements/backlinks-explorer') || has_block('lw-enhancements/ranked-keywords') || has_block('lw-enhancements/citation-finder') || has_block('lw-enhancements/credits') || has_block('lw-enhancements/results')) {
             echo '<style>
             header { display: none; }
             footer { display: none; }
