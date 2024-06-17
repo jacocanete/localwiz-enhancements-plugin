@@ -11662,8 +11662,10 @@ function BacklinksExplorer() {
   const [download, setDownload] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [submitting, setSubmitting] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [loadingResults, setLoadingResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    getSavedResults();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
+    setLoading(true);
+    await getSavedResults();
+    setLoading(false);
   }, []);
   function handleSubmit(e) {
     e.preventDefault();
@@ -11679,6 +11681,7 @@ function BacklinksExplorer() {
   }
   async function getSavedResults() {
     try {
+      setLoading(true);
       const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
@@ -11798,8 +11801,18 @@ function BacklinksExplorer() {
         return;
       } else {
         const data = response.data;
+        if (data.tasks[0].result === null) {
+          setError("Task executed successfully but no data was found, please check target URL and try again.");
+          setLoading(false);
+          return;
+        }
         const items = data.tasks[0].result[0].items;
         let firstInstance = true;
+        if (!items || items.length === 0) {
+          setError("Task executed successfully but no data was found, please check target URL and try again.");
+          setLoading(false);
+          return;
+        }
         const csvData = items.map(item => {
           const newItem = {
             target: firstInstance ? formData.target : "",
@@ -11816,7 +11829,7 @@ function BacklinksExplorer() {
         let csvUrl = URL.createObjectURL(csvBlob);
         let date = new Date();
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-        let url = new URL(formData.target);
+        let url = new URL(`https://${formData.target}`);
         let formattedHostName = url.hostname.replace("www.", "");
         let reader = new FileReader();
         reader.readAsDataURL(csvBlob);
@@ -11843,7 +11856,13 @@ function BacklinksExplorer() {
         setTime(parseFloat(data.time));
       }
     } catch (e) {
+      if (e.response.data.code === "balance_error") {
+        setError("Insufficient credits to complete this task.");
+        setLoading(false);
+        return;
+      }
       setError(`Unable to fetch data: ${e.message}`);
+      console.log(e);
       setLoading(false);
     }
   }
@@ -11861,11 +11880,11 @@ function BacklinksExplorer() {
     for: "target",
     class: "form-label"
   }, "Target:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "url",
+    type: "text",
     className: "form-control",
     name: "target",
     id: "target",
-    placeholder: "ex. https://localdominator.co",
+    placeholder: "ex. localdominator.co",
     onChange: e => setFormData({
       ...formData,
       target: e.target.value
@@ -11930,7 +11949,6 @@ function BacklinksExplorer() {
     class: "form-label"
   }, "Backlink Status Type:"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
     className: "form-select",
-    "aria-label": "Default select example",
     id: "backlinkStatusType",
     onChange: e => setBacklinkStatusType(e.target.value),
     disabled: loading
@@ -11999,7 +12017,7 @@ function BacklinksExplorer() {
     href: `${site_url.root_url}/results/?id=${item.id}&type=backlinks-explorer`,
     className: "btn btn-link",
     target: "_blank"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)), " "))))))) : items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null)), " "))))))) : !loading && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center gap-2"
