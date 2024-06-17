@@ -53,6 +53,7 @@ function RankedKeywords() {
 			setAvailableLanguages(
 				locationLanguages ? locationLanguages.available_languages : [],
 			);
+			setLanguage(locationLanguages.available_languages[0].language_code);
 		}
 	}, [location, allLanguages]);
 
@@ -115,7 +116,7 @@ function RankedKeywords() {
 			}
 
 			const response = await axios.get(
-				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&lc=${location}&hsm=${historicalSerpMode}`,
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`,
 				{
 					headers: {
 						"X-WP-Nonce": site_url.nonce,
