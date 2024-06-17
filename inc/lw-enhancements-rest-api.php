@@ -281,12 +281,12 @@ class LW_Enhancements_REST_API
             )
         );
 
-        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced' : 'https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced';
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced' : 'https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced';
 
         curl_setopt_array(
             $curl,
             array(
-                CURLOPT_URL => "https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced",
+                CURLOPT_URL => $apiUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -324,23 +324,23 @@ class LW_Enhancements_REST_API
             return;
         }
 
-        // Check if the user has enough credits
-        $user_id = get_current_user_id();
-        $meta_key = 'lw-enhancements-credits';
-        $credits_balance = get_user_meta($user_id, $meta_key, true);
+        // // Check if the user has enough credits
+        // $user_id = get_current_user_id();
+        // $meta_key = 'lw-enhancements-credits';
+        // $credits_balance = get_user_meta($user_id, $meta_key, true);
 
-        $credits_balance = floatval($credits_balance);
+        // $credits_balance = floatval($credits_balance);
 
-        if (!isset($responseArray['cost'])) {
-            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
-        }
+        // if (!isset($responseArray['cost'])) {
+        //     return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        // }
 
-        $cost = $responseArray['cost'] * 0;
+        // $cost = $responseArray['cost'] * 0;
 
-        if ($useCredits) {
-            $credits_balance -= $cost;
-            update_user_meta($user_id, $meta_key, $credits_balance);
-        }
+        // if ($useCredits) {
+        //     $credits_balance -= $cost;
+        //     update_user_meta($user_id, $meta_key, $credits_balance);
+        // }
 
         wp_send_json($responseArray);
     }
@@ -475,12 +475,12 @@ class LW_Enhancements_REST_API
             )
         );
 
-        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/backlinks/backlinks/live' : 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live';
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/backlinks/backlinks/live' : 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live';
 
         curl_setopt_array(
             $curl,
             array(
-                CURLOPT_URL => 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live',
+                CURLOPT_URL => $apiUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -514,23 +514,23 @@ class LW_Enhancements_REST_API
             return;
         }
 
-        // Check if the user has enough credits
-        $user_id = get_current_user_id();
-        $meta_key = 'lw-enhancements-credits';
-        $credits_balance = get_user_meta($user_id, $meta_key, true);
+        // // Check if the user has enough credits
+        // $user_id = get_current_user_id();
+        // $meta_key = 'lw-enhancements-credits';
+        // $credits_balance = get_user_meta($user_id, $meta_key, true);
 
-        $credits_balance = floatval($credits_balance);
+        // $credits_balance = floatval($credits_balance);
 
-        if (!isset($responseArray['cost'])) {
-            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
-        }
+        // if (!isset($responseArray['cost'])) {
+        //     return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        // }
 
-        $cost = $responseArray['cost'] * 5;
+        // $cost = $responseArray['cost'] * 5;
 
-        if ($useCredits) {
-            $credits_balance -= $cost;
-            update_user_meta($user_id, $meta_key, $credits_balance);
-        }
+        // if ($useCredits) {
+        //     $credits_balance -= $cost;
+        //     update_user_meta($user_id, $meta_key, $credits_balance);
+        // }
 
         wp_send_json($responseArray);
     }
@@ -639,7 +639,7 @@ class LW_Enhancements_REST_API
         $useCredits = get_option('lw-enhancements-use-credits') == '1';
 
         if ($useCredits) {
-            $user_id = get_current_user_id();
+            $user_id = 1;
             $meta_key = 'lw-enhancements-credits';
             $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
 
@@ -667,12 +667,12 @@ class LW_Enhancements_REST_API
             )
         );
 
-        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live' : 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live';
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live' : 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live';
 
         curl_setopt_array(
             $curl,
             array(
-                CURLOPT_URL => 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live',
+                CURLOPT_URL => $apiUrl,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -706,23 +706,23 @@ class LW_Enhancements_REST_API
             return;
         }
 
-        // Check if the user has enough credits
-        $user_id = get_current_user_id();
-        $meta_key = 'lw-enhancements-credits';
-        $credits_balance = get_user_meta($user_id, $meta_key, true);
+        // // Check if the user has enough credits
+        // $user_id = get_current_user_id();
+        // $meta_key = 'lw-enhancements-credits';
+        // $credits_balance = get_user_meta($user_id, $meta_key, true);
 
-        $credits_balance = floatval($credits_balance);
+        // $credits_balance = floatval($credits_balance);
 
-        if (!isset($responseArray['cost'])) {
-            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
-        }
+        // if (!isset($responseArray['cost'])) {
+        //     return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        // }
 
-        $cost = $responseArray['cost'] * 0;
+        // $cost = $responseArray['cost'] * 0;
 
-        if ($useCredits) {
-            $credits_balance -= $cost;
-            update_user_meta($user_id, $meta_key, $credits_balance);
-        }
+        // if ($useCredits) {
+        //     $credits_balance -= $cost;
+        //     update_user_meta($user_id, $meta_key, $credits_balance);
+        // }
 
         wp_send_json($responseArray);
     }
