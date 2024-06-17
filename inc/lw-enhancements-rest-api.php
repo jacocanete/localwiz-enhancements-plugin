@@ -376,7 +376,7 @@ class LW_Enhancements_REST_API
                     "backlinks_status_type" => sanitize_text_field($params['bst']),
                     "internal_list_limit" => sanitize_text_field($params['ill']),
                     "mode" => sanitize_text_field($params['m']),
-                    "limit" => 1000
+                    "limit" => 10000
                 )
             )
         );
@@ -567,7 +567,7 @@ class LW_Enhancements_REST_API
                     "historical_serp_mode" => sanitize_text_field($params['hsm']),
                     "ignore_synonyms" => false,
                     "load_rank_absolute" => false,
-                    "limit" => 1000,
+                    "limit" => 10000,
                 )
             )
         );
