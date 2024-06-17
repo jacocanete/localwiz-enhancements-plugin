@@ -5,6 +5,7 @@ import Papa from "papaparse";
 import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import { flattenData } from "./utils/flattenData";
+import { FaInfoCircle } from "react-icons/fa";
 
 const block = document.querySelectorAll(".backlinks-explorer-update");
 
@@ -28,6 +29,13 @@ function BacklinksExplorer() {
 	const [download, setDownload] = useState({});
 	const [submitting, setSubmitting] = useState(false);
 	const [loadingResults, setLoadingResults] = useState(false);
+
+	const tooltipTriggerList = document.querySelectorAll(
+		'[data-bs-toggle="tooltip"]',
+	);
+	const tooltipList = [...tooltipTriggerList].map(
+		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+	);
 
 	useEffect(async () => {
 		setLoading(true);
@@ -104,24 +112,16 @@ function BacklinksExplorer() {
 			setLoading(true);
 
 			const urlPattern = new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name and extension
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?" + // port
-					"(\\/[-a-z\\d%_.~+]*)*" + // path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
+				"^((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})$", // domain name and extension
 				"i",
-			); // fragment locator
+			);
 
 			if (
 				!formData.target ||
 				formData.target === "" ||
 				!urlPattern.test(formData.target)
 			) {
-				setError(
-					"Invalid input. Please enter a valid URL including the http:// or https:// prefix.",
-				);
+				setError("Please enter a target URL without 'https://' or 'www.'");
 				setLoading(false);
 				return;
 			} else if (internalListLimit < 1 || internalListLimit > 1000) {
@@ -290,7 +290,14 @@ function BacklinksExplorer() {
 					<div className="row mb-3">
 						<div className="col">
 							<label for="target" class="form-label">
-								Target:
+								Target:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="The domain name of the target website. The domain should be specified without 'https://' and 'www.'"
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<input
 								type="text"
@@ -302,13 +309,21 @@ function BacklinksExplorer() {
 									setFormData({ ...formData, target: e.target.value })
 								}
 								disabled={loading}
+								required
 							/>
 						</div>
 					</div>
 					<div className="row mb-3">
 						<div className="col">
 							<label for="mode" class="form-label">
-								Mode:
+								Mode:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Results grouping type."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -325,7 +340,14 @@ function BacklinksExplorer() {
 						</div>
 						<div className="col">
 							<label for="includeSubdomains" class="form-label">
-								Include Subdomains:
+								Include Subdomains:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Indicates if the subdomains of the 'target' will be included in the search."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -342,7 +364,14 @@ function BacklinksExplorer() {
 					<div className="row mb-3">
 						<div className="col">
 							<label for="includeIndirectLinks" class="form-label">
-								Include Indirect Links:
+								Include Indirect Links:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Indicates if indirect links to the 'target' will be included in the results."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -357,7 +386,14 @@ function BacklinksExplorer() {
 						</div>
 						<div className="col">
 							<label for="backlinkStatusType" class="form-label">
-								Backlink Status Type:
+								Backlink Status Type:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Set what backlinks to return and count."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -374,7 +410,14 @@ function BacklinksExplorer() {
 					<div className="row mb-3">
 						<div className="col">
 							<label for="internalListLimit" class="form-label">
-								Internal List Limit:
+								Internal List Limit:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Maximum number of elements within internal arrays."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<input
 								type="number"
@@ -453,6 +496,9 @@ function BacklinksExplorer() {
 													href={item.csv_url}
 													className="btn btn-link"
 													download={item.file_name}
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="Download csv"
 												>
 													<FaDownload />
 												</a>
@@ -462,6 +508,9 @@ function BacklinksExplorer() {
 													href={`${site_url.root_url}/results/?id=${item.id}&type=backlinks-explorer`}
 													className="btn btn-link"
 													target="_blank"
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="View file in new tab"
 												>
 													<FaEye />
 												</a>{" "}

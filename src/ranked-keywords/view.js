@@ -6,6 +6,7 @@ import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import locations from "./utils/locations";
 import { flattenData } from "./utils/flattenData";
+import { FaInfoCircle } from "react-icons/fa";
 
 const block = document.querySelectorAll(".ranked-keywords-update");
 
@@ -30,6 +31,13 @@ function RankedKeywords() {
 	const [language, setLanguage] = useState("en");
 	const [historicalSerpMode, setHistoricalSerpMode] = useState("live");
 	const allLanguages = locations;
+
+	const tooltipTriggerList = document.querySelectorAll(
+		'[data-bs-toggle="tooltip"]',
+	);
+	const tooltipList = [...tooltipTriggerList].map(
+		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+	);
 
 	useEffect(async () => {
 		setSubmitting(true);
@@ -91,10 +99,15 @@ function RankedKeywords() {
 
 			const { formData, location, historicalSerpMode } = params;
 
+			const urlPattern = new RegExp(
+				"^((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})$", // domain name and extension
+				"i",
+			);
+
 			if (
 				!formData.target ||
 				formData.target === "" ||
-				/^https?:\/\/|www\./i.test(formData.target)
+				!urlPattern.test(formData.target)
 			) {
 				setError("Please enter a target URL without 'https://' or 'www.'");
 				setLoading(false);
@@ -225,7 +238,14 @@ function RankedKeywords() {
 					<div className="row mb-3">
 						<div className="col">
 							<label for="target" class="form-label">
-								Target:
+								Target:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="The domain name of the target website. The domain should be specified without 'https://' and 'www.'"
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<input
 								type="text"
@@ -235,13 +255,21 @@ function RankedKeywords() {
 								placeholder="ex. localdominator.co"
 								onChange={handleChange}
 								disabled={loading}
+								required
 							/>
 						</div>
 					</div>
 					<div className="row mb-3">
 						<div className="col">
 							<label for="location" class="form-label">
-								Location:
+								Location:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Search engine location."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -259,7 +287,14 @@ function RankedKeywords() {
 						</div>
 						<div className="col">
 							<label for="language" class="form-label">
-								Language:
+								Language:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="Search engine language."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -280,7 +315,14 @@ function RankedKeywords() {
 					<div className="row mb-3">
 						<div className="col">
 							<label for="historicalSerpMode" class="form-label">
-								Historical SERP Mode:
+								Historical SERP Mode:{" "}
+								<span
+									data-bs-toggle="tooltip"
+									data-bs-placement="top"
+									data-bs-title="'live' — return keywords for which the specified target currently has ranking results in SERP; 'lost' — return keywords for which the specified target had previously had ranking results in SERP, but didn’t have them during the last check; 'all' — return both types of keywords."
+								>
+									<FaInfoCircle />
+								</span>
 							</label>
 							<select
 								className="form-select"
@@ -360,6 +402,9 @@ function RankedKeywords() {
 													href={item.csv_url}
 													className="btn btn-link"
 													download={item.file_name}
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="Download csv"
 												>
 													<FaDownload />
 												</a>
@@ -369,6 +414,9 @@ function RankedKeywords() {
 													href={`${site_url.root_url}/results/?id=${item.id}&type=citation-finder`}
 													className="btn btn-link"
 													target="_blank"
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="View file in new tab"
 												>
 													<FaEye />
 												</a>
@@ -391,40 +439,6 @@ function RankedKeywords() {
 						Loading saved results...
 					</div>
 				)}
-				{/* <div className="container collapse table-responsive" id="urlCollapse">
-					<table className="table table-striped table-hover mt-3 caption-top">
-						<caption>Download the CSV for a better view.</caption>
-						<thead className="table-dark">
-							<tr>
-								{items[0] &&
-									Object.keys(items[0]).map((key, index) => (
-										<th key={index}>{key}</th>
-									))}
-							</tr>
-						</thead>
-						<tbody>
-							{items.map((item, index) => (
-								<tr key={index}>
-									{Object.values(item).map((value, i) => (
-										<td key={i} className="text-truncate">
-											{typeof value === "string" && value.startsWith("http") ? (
-												<a href={value} target="_blank" rel="noreferrer">
-													{value}
-												</a>
-											) : typeof value === "boolean" ? (
-												value.toString()
-											) : typeof value === "object" ? (
-												JSON.stringify(value)
-											) : (
-												value
-											)}
-										</td>
-									))}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div> */}
 			</div>
 		</div>
 	);

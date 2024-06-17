@@ -4,6 +4,7 @@ import axios from "axios";
 import Papa from "papaparse";
 import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 
 const block = document.querySelectorAll(".citation-finder-update");
 
@@ -24,6 +25,13 @@ function CitationFinder() {
 	const [currentID, setCurrentID] = useState(0);
 	const [credits, setCredits] = useState(0);
 	const [submitting, setSubmitting] = useState(false);
+
+	const tooltipTriggerList = document.querySelectorAll(
+		'[data-bs-toggle="tooltip"]',
+	);
+	const tooltipList = [...tooltipTriggerList].map(
+		(tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+	);
 
 	useEffect(async () => {
 		setLoading(true);
@@ -173,7 +181,16 @@ function CitationFinder() {
 			<div className="p-4 border shadow inner">
 				<form onSubmit={handleSubmit}>
 					<div className="mb-3">
-						<label class="form-label">Enter keyword here</label>
+						<label class="form-label">
+							Keywords:{" "}
+							<span
+								data-bs-toggle="tooltip"
+								data-bs-placement="top"
+								data-bs-title="You can specify up to 1000 keywords by using comma as a delimeter."
+							>
+								<FaInfoCircle />
+							</span>
+						</label>
 						<input
 							type="text"
 							name="keyword"
@@ -181,6 +198,7 @@ function CitationFinder() {
 							placeholder="ex. Weather control"
 							onChange={handleChange}
 							disabled={loading}
+							required
 						/>
 					</div>
 					<div className="mb-3">
@@ -244,6 +262,9 @@ function CitationFinder() {
 													href={item.csv_url}
 													className="btn btn-link"
 													download={item.file_name}
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="Download csv"
 												>
 													<FaDownload />
 												</a>
@@ -253,6 +274,9 @@ function CitationFinder() {
 													href={`${site_url.root_url}/results/?id=${item.id}&type=citation-finder`}
 													className="btn btn-link"
 													target="_blank"
+													data-bs-toggle="tooltip"
+													data-bs-placement="top"
+													data-bs-title="View file in new tab"
 												>
 													<FaEye />
 												</a>
