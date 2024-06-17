@@ -26,6 +26,18 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
+            'citation-finder-test',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'citation_finder_test'),
+            )
+        );
+
+        // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/citation-finder-test
+        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/citation-finder-test
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
             'backlinks-explorer',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
@@ -36,6 +48,18 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
+            'backlinks-explorer-test',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'backlinks_explorer_test'),
+            )
+        );
+
+        // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer-test
+        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/backlinks-explorer-test
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
             'ranked-keywords',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
@@ -43,6 +67,18 @@ class LW_Enhancements_REST_API
                 'permission_callback' => array($this, 'verify_nonce')
             )
         );
+
+        register_rest_route(
+            'localwiz-enhancements/v1',
+            'ranked-keywords',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'ranked_keywords_test'),
+            )
+        );
+
+        // Local: http://gosystem7.local/wp-json/localwiz-enhancements/v1/ranked-keywords-test
+        // Prod: http://gosystem7.local/wp-json/localwiz-enhancements/v1/ranked-keywords-test
 
         register_rest_route(
             'localwiz-enhancements/v1',
@@ -210,6 +246,105 @@ class LW_Enhancements_REST_API
         wp_send_json($responseArray);
     }
 
+    public function citation_finder_test($keyword)
+    {
+        error_log('citation-finder-test called');
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = 1;
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
+        $curl = curl_init();
+
+        $postFields = json_encode(
+            array(
+                array(
+                    "keyword" => "weather control",
+                    "location_code" => 2840,
+                    "language_code" => "en",
+                    "device" => "desktop",
+                    "os" => "windows",
+                    "depth" => 100
+                )
+            )
+        );
+
+        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced' : 'https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => "https://sandbox.dataforseo.com/v3/serp/google/organic/live/advanced",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        // Execute the request
+        $response = curl_exec($curl);
+
+        // Check for errors
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
+        curl_close($curl);
+
+        // Decode the response
+        $responseArray = json_decode($response, true);
+
+        // Check if the response is valid JSON
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
+
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 0;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
+        wp_send_json($responseArray);
+    }
+
     public function backlinks_explorer($params)
     {
         error_log('backlinks_explorer called');
@@ -305,6 +440,101 @@ class LW_Enhancements_REST_API
         wp_send_json($responseArray);
     }
 
+    public function backlinks_explorer_test($params)
+    {
+        error_log('backlinks_explorer_test called');
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = 1;
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
+        $curl = curl_init();
+
+        $postFields = json_encode(
+            array(
+                array(
+                    "target" => 'localdominator.co',
+                    "include_subdomains" => 'true',
+                    "include_indirect_links" => 'true',
+                    "backlinks_status_type" => 'all',
+                    "internal_list_limit" => '10',
+                    "mode" => 'as_is',
+                )
+            )
+        );
+
+        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/backlinks/backlinks/live' : 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
+        curl_close($curl);
+
+        $responseArray = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
+
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 5;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
+        wp_send_json($responseArray);
+    }
+
     public function ranked_keywords($params)
     {
         error_log('ranked keywords called');
@@ -332,7 +562,7 @@ class LW_Enhancements_REST_API
                 array(
                     "target" => sanitize_text_field($params['t']),
                     "location_code" => sanitize_text_field($params['lc']),
-                    "language_code" => "en",
+                    "language_code" => "en", // make this dynamic later
                     "historical_serp_mode" => sanitize_text_field($params['hsm']),
                     "ignore_synonyms" => false,
                     "load_rank_absolute" => false,
@@ -391,7 +621,103 @@ class LW_Enhancements_REST_API
             return new WP_Error('cost_error', "Cost not found", array('status' => 500));
         }
 
-        $cost = $responseArray['cost'] * 5;
+        $cost = $responseArray['cost'] * 0;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
+        wp_send_json($responseArray);
+    }
+
+    public function ranked_keywords_test($params)
+    {
+        error_log('ranked keywords called');
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = get_current_user_id();
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
+        $curl = curl_init();
+
+        $postFields = json_encode(
+            array(
+                array(
+                    "target" => 'localdominator.co',
+                    "location_code" => 2840,
+                    "language_code" => "en",
+                    "historical_serp_mode" => 'all',
+                    "ignore_synonyms" => false,
+                    "load_rank_absolute" => false,
+                    "limit" => 100,
+                )
+            )
+        );
+
+        // $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live' : 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
+        curl_close($curl);
+
+        $responseArray = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
+
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 0;
 
         if ($useCredits) {
             $credits_balance -= $cost;
