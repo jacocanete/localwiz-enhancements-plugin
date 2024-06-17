@@ -25,12 +25,15 @@ function CitationFinder() {
 	const [credits, setCredits] = useState(0);
 	const [submitting, setSubmitting] = useState(false);
 
-	useEffect(() => {
-		getSavedResults();
+	useEffect(async () => {
+		setLoading(true);
+		await getSavedResults();
+		setLoading(false);
 	}, []);
 
 	async function getSavedResults() {
 		try {
+			setLoading(true);
 			const response = await axios.get(
 				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`,
 				{
@@ -260,7 +263,7 @@ function CitationFinder() {
 							</table>
 						</div>
 					</>
-				) : items && items.length === 0 ? (
+				) : !loading && items && items.length === 0 ? (
 					<div className="alert alert-info">No saved results found.</div>
 				) : (
 					<div className="d-flex align-items-center gap-2">
