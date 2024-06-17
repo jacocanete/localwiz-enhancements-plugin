@@ -13007,6 +13007,7 @@ function RankedKeywords() {
     if (location) {
       const locationLanguages = allLanguages.find(loc => loc.location_code === location);
       setAvailableLanguages(locationLanguages ? locationLanguages.available_languages : []);
+      setLanguage(locationLanguages.available_languages[0].language_code);
     }
   }, [location, allLanguages]);
   async function getSavedResults() {
@@ -13056,7 +13057,7 @@ function RankedKeywords() {
         setLoading(false);
         return;
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&lc=${location}&hsm=${historicalSerpMode}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
