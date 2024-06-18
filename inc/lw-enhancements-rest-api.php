@@ -82,14 +82,13 @@ class LW_Enhancements_REST_API
 
         register_rest_route(
             'localwiz-enhancements/v1',
-            'languages',
+            'instant-pages',
             array(
                 'methods' => WP_REST_SERVER::READABLE,
-                'callback' => array($this, 'languages'),
+                'callback' => array($this, 'instant_pages'),
                 'permission_callback' => array($this, 'verify_nonce')
             )
         );
-
 
         register_rest_route(
             'localwiz-enhancements/v1',
@@ -622,7 +621,7 @@ class LW_Enhancements_REST_API
             return new WP_Error('cost_error', "Cost not found", array('status' => 500));
         }
 
-        $cost = $responseArray['cost'] * 0;
+        $cost = $responseArray['cost'] * 5;
 
         if ($useCredits) {
             $credits_balance -= $cost;
@@ -727,6 +726,102 @@ class LW_Enhancements_REST_API
 
     //     wp_send_json($responseArray);
     // }
+
+    public function instant_pages($params)
+    {
+        error_log('instant pages called');
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        if ($useCredits) {
+            $user_id = get_current_user_id();
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+            // Assuming a default cost as we don't know the actual cost before the request
+            $defaultCost = 0.1;
+
+            if ($credits_balance < $defaultCost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
+        $curl = curl_init();
+
+        $postFields = json_encode(
+            array(
+                array(
+                    "url" => sanitize_text_field($params['url']),
+                    "check_spell" => false,
+                    "disable_cookie_popup" => false,
+                    "return_despite_timeout" => false,
+                    "load_resources" => false,
+                    "enable_javascript" => false,
+                    "enable_browser_rendering" => false
+                )
+            )
+        );
+
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/on_page/instant_pages' : 'https://sandbox.dataforseo.com/v3/on_page/instant_pages';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $apiUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password')),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            wp_send_json(array('error' => $error));
+            return;
+        }
+
+        curl_close($curl);
+
+        $responseArray = json_decode($response, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
+
+        // Check if the user has enough credits
+        $user_id = get_current_user_id();
+        $meta_key = 'lw-enhancements-credits';
+        $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+        $credits_balance = floatval($credits_balance);
+
+        if (!isset($responseArray['cost'])) {
+            return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+        }
+
+        $cost = $responseArray['cost'] * 5;
+
+        if ($useCredits) {
+            $credits_balance -= $cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
+        wp_send_json($responseArray);
+    }
 
     public function get_credits_balance()
     {
@@ -947,49 +1042,5 @@ class LW_Enhancements_REST_API
             'attachment_id' => $attachment_id,
             'url' => $upload_dir['url'] . '/' . $upload_file_name
         ), 200);
-    }
-
-    public function languages()
-    {
-        error_log('get languages called');
-
-        $curl = curl_init();
-
-        curl_setopt_array(
-            $curl,
-            array(
-                CURLOPT_URL => "https://api.dataforseo.com/v3/dataforseo_labs/locations_and_languages",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "GET",
-                CURLOPT_HTTPHEADER => array(
-                    "Authorization: Basic " . base64_encode(get_option('lw-enhancements-username') . ":" . get_option('lw-enhancements-password'))
-                ),
-            )
-        );
-
-        $response = curl_exec($curl);
-
-        if ($response === false) {
-            $error = curl_error($curl);
-            curl_close($curl);
-            wp_send_json(array('error' => $error));
-            return;
-        }
-
-        curl_close($curl);
-
-        $responseArray = json_decode($response, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            wp_send_json(array('error' => 'Invalid JSON response'));
-            return;
-        }
-
-        wp_send_json($responseArray);
     }
 }

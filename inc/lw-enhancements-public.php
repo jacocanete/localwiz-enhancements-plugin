@@ -7,6 +7,7 @@ class LW_Enhancements_Public
         register_block_type(CF_PLUGIN_DIR . '/build/backlinks-explorer');
         register_block_type(CF_PLUGIN_DIR . '/build/citation-finder');
         register_block_type(CF_PLUGIN_DIR . '/build/ranked-keywords');
+        register_block_type(CF_PLUGIN_DIR . '/build/page-audit');
         register_block_type(CF_PLUGIN_DIR . '/build/credits');
         register_block_type(CF_PLUGIN_DIR . '/build/results');
     }
