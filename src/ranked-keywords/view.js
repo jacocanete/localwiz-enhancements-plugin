@@ -428,7 +428,7 @@ function RankedKeywords() {
 							</table>
 						</div>
 					</>
-				) : !submitting && items && items.length === 0 ? (
+				) : !loading && items && items.length === 0 ? (
 					<div className="alert alert-info">No saved results found.</div>
 				) : (
 					<div className="d-flex align-items-center gap-2">
