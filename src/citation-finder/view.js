@@ -34,9 +34,9 @@ function CitationFinder() {
 	);
 
 	useEffect(async () => {
-		setLoading(true);
+		setSubmitting(true);
 		await getSavedResults();
-		setLoading(false);
+		setSubmitting(false);
 	}, []);
 
 	async function getSavedResults() {
@@ -287,7 +287,7 @@ function CitationFinder() {
 							</table>
 						</div>
 					</>
-				) : !loading && items && items.length === 0 ? (
+				) : !submitting && items && items.length === 0 ? (
 					<div className="alert alert-info">No saved results found.</div>
 				) : (
 					<div className="d-flex align-items-center gap-2">
@@ -299,40 +299,6 @@ function CitationFinder() {
 						Loading saved results...
 					</div>
 				)}
-				{/* <div className="container collapse table-responsive" id="urlCollapse">
-					<table className="table table-striped table-hover mt-3 caption-top">
-						<caption>Download the CSV for a better view.</caption>
-						<thead className="table-dark">
-							<tr>
-								{items[0] &&
-									Object.keys(items[0]).map((key, index) => (
-										<th key={index}>{key}</th>
-									))}
-							</tr>
-						</thead>
-						<tbody>
-							{items.map((item, index) => (
-								<tr key={index}>
-									{Object.values(item).map((value, i) => (
-										<td key={i} className="text-truncate">
-											{typeof value === "string" && value.startsWith("http") ? (
-												<a href={value} target="_blank" rel="noreferrer">
-													{value}
-												</a>
-											) : typeof value === "boolean" ? (
-												value.toString()
-											) : typeof value === "object" ? (
-												JSON.stringify(value)
-											) : (
-												value
-											)}
-										</td>
-									))}
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div> */}
 			</div>
 		</div>
 	);

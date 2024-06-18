@@ -38,9 +38,9 @@ function BacklinksExplorer() {
 	);
 
 	useEffect(async () => {
-		setLoading(true);
+		setSubmitting(true);
 		await getSavedResults();
-		setLoading(false);
+		setSubmitting(false);
 	}, []);
 
 	function handleSubmit(e) {
