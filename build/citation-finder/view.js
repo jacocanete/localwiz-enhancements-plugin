@@ -11634,9 +11634,9 @@ function CitationFinder() {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
-    setLoading(true);
+    setSubmitting(true);
     await getSavedResults();
-    setLoading(false);
+    setSubmitting(false);
   }, []);
   async function getSavedResults() {
     try {
@@ -11814,7 +11814,7 @@ function CitationFinder() {
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "View file in new tab"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null))))))))) : !loading && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center gap-2"

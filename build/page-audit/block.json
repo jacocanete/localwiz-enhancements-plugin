@@ -1,0 +1,20 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "lw-enhancements/page-audit",
+  "version": "0.0.1",
+  "title": "Page Audit",
+  "category": "widgets",
+  "icon": "text-page",
+  "description": "Page audit block can obtain a variety of on-page SEO data.",
+  "example": {},
+  "supports": {
+    "html": false
+  },
+  "textdomain": "lw-enhancements",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php",
+  "viewScript": "file:./view.js"
+}

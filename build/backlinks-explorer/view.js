@@ -11666,9 +11666,9 @@ function BacklinksExplorer() {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
-    setLoading(true);
+    setSubmitting(true);
     await getSavedResults();
-    setLoading(false);
+    setSubmitting(false);
   }, []);
   function handleSubmit(e) {
     e.preventDefault();
