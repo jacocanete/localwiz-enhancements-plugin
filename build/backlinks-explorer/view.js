@@ -11780,7 +11780,7 @@ function BacklinksExplorer() {
       } else if (mode === "3") {
         modeValue = "one_per_anchor";
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v2/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v3/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -11845,7 +11845,7 @@ function BacklinksExplorer() {
             setError("Error uploading file:", error.response.data);
           });
         };
-        setTime(parseFloat(data.execution_time));
+        setTime(parseFloat(data.execution_time).toFixed(4));
       }
     } catch (e) {
       setError(`Unable to fetch data: ${e.message}`);

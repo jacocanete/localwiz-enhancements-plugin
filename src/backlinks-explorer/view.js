@@ -175,7 +175,7 @@ function BacklinksExplorer() {
 			}
 
 			const response = await axios.get(
-				`${site_url.root_url}/wp-json/localwiz-enhancements/v2/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v3/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
 				{
 					headers: {
 						"X-WP-Nonce": site_url.nonce,
@@ -268,7 +268,7 @@ function BacklinksExplorer() {
 						});
 				};
 
-				setTime(parseFloat(data.execution_time));
+				setTime(parseFloat(data.execution_time).toFixed(4));
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);
