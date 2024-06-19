@@ -8,7 +8,11 @@ function flattenObject(ob) {
 				toReturn[`${i}.${x}`] = flatValue;
 			}
 		} else {
-			toReturn[i] = value;
+			if (typeof value === "boolean") {
+				toReturn[i] = value ? "Yes" : "No";
+			} else {
+				toReturn[i] = value;
+			}
 		}
 	}
 	return toReturn;
