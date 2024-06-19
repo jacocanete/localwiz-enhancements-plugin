@@ -268,7 +268,7 @@ function BacklinksExplorer() {
 						});
 				};
 
-				setTime(parseFloat(data.time));
+				setTime(parseFloat(data.execution_time));
 			}
 		} catch (e) {
 			setError(`Unable to fetch data: ${e.message}`);

@@ -456,6 +456,8 @@ class LW_Enhancements_REST_API
 
     public function backlinks_explorer_v2($params)
     {
+        $start_time = microtime(true);
+
         error_log('backlinks_explorer called');
 
         $total_count = 0;
@@ -587,11 +589,16 @@ class LW_Enhancements_REST_API
             update_user_meta($user_id, $meta_key, $credits_balance);
         }
 
+        $end_time = microtime(true);
+
+        $execution_time = $end_time - $start_time;
+
         $responseArray = array(
             'total_count' => $total_count,
             'time' => $total_time,
             'items' => $itemsArray,
-            'cost' => $total_cost
+            'cost' => $total_cost,
+            'execution_time' => $execution_time
         );
 
         wp_send_json($responseArray);
