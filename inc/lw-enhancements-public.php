@@ -8,6 +8,7 @@ class LW_Enhancements_Public
         register_block_type(CF_PLUGIN_DIR . '/build/citation-finder');
         register_block_type(CF_PLUGIN_DIR . '/build/ranked-keywords');
         register_block_type(CF_PLUGIN_DIR . '/build/page-audit');
+        register_block_type(CF_PLUGIN_DIR . '/build/domain-overview');
         register_block_type(CF_PLUGIN_DIR . '/build/credits');
         register_block_type(CF_PLUGIN_DIR . '/build/results');
     }
@@ -31,10 +32,11 @@ class LW_Enhancements_Public
             'logged_in' => is_user_logged_in(),
         );
 
-
         wp_localize_script('lw-enhancements-backlink-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-citation-finder-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-ranked-keywords-view-script', 'site_url', $site_url);
+        wp_localize_script('lw-enhancements-page-audit-view-script', 'site_url', $site_url);
+        wp_localize_script('lw-enhancements-domain-overview-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-credits-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-results-view-script', 'site_url', $site_url);
         wp_localize_script('lw-enhancements-credits-view-script', 'auth', $auth);

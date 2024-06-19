@@ -912,7 +912,7 @@ class LW_Enhancements_REST_API
         error_log('id: ' . $id);
 
         if ($id) {
-            $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND id = %s", array($user_id, $id));
+            $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND id = %s AND request_type = %s", array($user_id, $id, $request_type));
             $results = $wpdb->get_results($ourQuery);
 
             if ($wpdb->last_error) {
@@ -1011,8 +1011,8 @@ class LW_Enhancements_REST_API
         $table_name = $this->tablename;
         $csv_url = $upload_dir['url'] . '/' . $upload_file_name;
 
-        // Ensure the URL is HTTPS
-        $csv_url = str_replace("http://", "https://", $csv_url);
+        // // Ensure the URL is HTTPS
+        // $csv_url = str_replace("http://", "https://", $csv_url);
 
         $data = array(
             'user_id' => $user_id,
