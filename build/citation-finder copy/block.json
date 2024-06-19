@@ -1,12 +1,12 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "lw-enhancements/results",
-  "version": "0.0.4",
-  "title": "Results",
+  "name": "lw-enhancements/citation-finder",
+  "version": "1.1.2",
+  "title": "Citation Finder",
   "category": "widgets",
-  "icon": "editor-table",
-  "description": "Results block to display the results of a request.",
+  "icon": "search",
+  "description": "Citation Finder block for finding citations from a given keyword.",
   "example": {},
   "supports": {
     "html": false

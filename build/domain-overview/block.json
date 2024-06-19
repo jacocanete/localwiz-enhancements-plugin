@@ -1,12 +1,12 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "lw-enhancements/results",
-  "version": "0.0.4",
-  "title": "Results",
+  "name": "lw-enhancements/domain-overview",
+  "version": "0.0.1",
+  "title": "Domain Overview",
   "category": "widgets",
-  "icon": "editor-table",
-  "description": "Results block to display the results of a request.",
+  "icon": "feedback",
+  "description": "Domain Overview block can obtain a variety of on-page SEO data.",
   "example": {},
   "supports": {
     "html": false

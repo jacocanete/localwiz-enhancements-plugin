@@ -6,9 +6,11 @@
 ?>
 <div class="results-update">
 	<div class="container">
-		<div class="p-4 border shadow inner d-flex flex-row justify-content-center align-items-center">
-			<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
-			</span>
+		<div class="p-4 border shadow inner">
+			<div className="d-flex align-items-center gap-2">
+				<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+				Loading saved results...
+			</div>
 		</div>
 	</div>
 </div>

@@ -21,7 +21,11 @@ function flattenObject(ob) {
         toReturn[`${i}.${x}`] = flatValue;
       }
     } else {
-      toReturn[i] = value;
+      if (typeof value === "boolean") {
+        toReturn[i] = value ? "Yes" : "No";
+      } else {
+        toReturn[i] = value;
+      }
     }
   }
   return toReturn;
@@ -36,6 +40,37 @@ function flattenData(data) {
     }
   }
   return result;
+}
+
+/***/ }),
+
+/***/ "./src/page-audit/utils/isValidUrl.js":
+/*!********************************************!*\
+  !*** ./src/page-audit/utils/isValidUrl.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isValidUrl: () => (/* binding */ isValidUrl)
+/* harmony export */ });
+function isValidUrl(url) {
+  const urlPattern = new RegExp("^(https?:\\/\\/)?" +
+  // protocol
+  "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
+  // domain name and extension
+  "((\\d{1,3}\\.){3}\\d{1,3}))" +
+  // OR ip (v4) address
+  "(\\:\\d+)?" +
+  // port
+  "(\\/[-a-z\\d%_.~+]*)*" +
+  // path
+  "(\\?[;&a-z\\d%_.~+=-]*)?" +
+  // query string
+  "(\\#[-a-z\\d_]*)?$", "i"); // fragment locator
+
+  return url && urlPattern.test(url);
 }
 
 /***/ }),
@@ -11641,11 +11676,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
 /* harmony import */ var _utils_flattenData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/flattenData */ "./src/page-audit/utils/flattenData.js");
+/* harmony import */ var _utils_isValidUrl__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/isValidUrl */ "./src/page-audit/utils/isValidUrl.js");
+
 
 
 
@@ -11681,7 +11718,7 @@ function InstantPages() {
   async function getSavedResults() {
     try {
       setLoading(true);
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         },
@@ -11713,26 +11750,12 @@ function InstantPages() {
       setResults(null);
       setError(null);
       setLoading(true);
-      const urlPattern = new RegExp("^(https?:\\/\\/)?" +
-      // protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" +
-      // domain name and extension
-      "((\\d{1,3}\\.){3}\\d{1,3}))" +
-      // OR ip (v4) address
-      "(\\:\\d+)?" +
-      // port
-      "(\\/[-a-z\\d%_.~+]*)*" +
-      // path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" +
-      // query string
-      "(\\#[-a-z\\d_]*)?$", "i"); // fragment locator
-
-      if (!url || url === "" || !urlPattern.test(url)) {
+      if (!(0,_utils_isValidUrl__WEBPACK_IMPORTED_MODULE_4__.isValidUrl)(url)) {
         setError("Please enter a valid URL. Make sure to include http:// or https://");
         setLoading(false);
         return;
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/instant-pages?url=${url}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/instant-pages?url=${url}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -11781,7 +11804,7 @@ function InstantPages() {
         reader.onloadend = function () {
           let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
 
-          axios__WEBPACK_IMPORTED_MODULE_4__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
+          axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
             csv_data: base64data,
             file_name: `${formattedDate}-${formattedHostName}`,
             cost: data.cost,
@@ -11830,7 +11853,7 @@ function InstantPages() {
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "Absolute URL of the target page."
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "text",
     name: "url",
     className: "form-control",
@@ -11874,16 +11897,16 @@ function InstantPages() {
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "Download csv"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: `${site_url.root_url}/results/?id=${item.id}&type=citation-finder`,
+    href: `${site_url.root_url}/results/?id=${item.id}&type=instant-pages`,
     className: "btn btn-link",
     target: "_blank",
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "View file in new tab"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_5__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center gap-2"

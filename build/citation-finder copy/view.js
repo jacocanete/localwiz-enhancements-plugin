@@ -1,1363 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/ranked-keywords/utils/flattenData.js":
-/*!**************************************************!*\
-  !*** ./src/ranked-keywords/utils/flattenData.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   flattenData: () => (/* binding */ flattenData)
-/* harmony export */ });
-function flattenObject(ob) {
-  const toReturn = {};
-  for (const [i, value] of Object.entries(ob)) {
-    if (typeof value == "object" && value !== null) {
-      const flatObject = flattenObject(value);
-      for (const [x, flatValue] of Object.entries(flatObject)) {
-        toReturn[`${i}.${x}`] = flatValue;
-      }
-    } else {
-      toReturn[i] = value;
-    }
-  }
-  return toReturn;
-}
-function flattenData(data) {
-  const result = [];
-  for (const item of data) {
-    try {
-      result.push(flattenObject(item));
-    } catch (error) {
-      console.error(`Error flattening object: ${error}`);
-    }
-  }
-  return result;
-}
-
-/***/ }),
-
-/***/ "./src/ranked-keywords/utils/locations.js":
-/*!************************************************!*\
-  !*** ./src/ranked-keywords/utils/locations.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-const locations = [{
-  location_code: 2012,
-  location_name: "Algeria",
-  location_code_parent: null,
-  country_iso_code: "DZ",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 26579617,
-    serps: 1212564
-  }, {
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 12002743,
-    serps: 1202044
-  }]
-}, {
-  location_code: 2024,
-  location_name: "Angola",
-  location_code_parent: null,
-  country_iso_code: "AO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Portuguese",
-    language_code: "pt",
-    keywords: 15271321,
-    serps: 1133871
-  }]
-}, {
-  location_code: 2031,
-  location_name: "Azerbaijan",
-  location_code_parent: null,
-  country_iso_code: "AZ",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Azeri",
-    language_code: "az",
-    keywords: 15196287,
-    serps: 426318
-  }]
-}, {
-  location_code: 2032,
-  location_name: "Argentina",
-  location_code_parent: null,
-  country_iso_code: "AR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 56907411,
-    serps: 4008339
-  }]
-}, {
-  location_code: 2036,
-  location_name: "Australia",
-  location_code_parent: null,
-  country_iso_code: "AU",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 250802113,
-    serps: 16171337
-  }]
-}, {
-  location_code: 2040,
-  location_name: "Austria",
-  location_code_parent: null,
-  country_iso_code: "AT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "German",
-    language_code: "de",
-    keywords: 55875202,
-    serps: 2762223
-  }]
-}, {
-  location_code: 2048,
-  location_name: "Bahrain",
-  location_code_parent: null,
-  country_iso_code: "BH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 11918807,
-    serps: 402566
-  }]
-}, {
-  location_code: 2050,
-  location_name: "Bangladesh",
-  location_code_parent: null,
-  country_iso_code: "BD",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Bengali",
-    language_code: "bn",
-    keywords: 29733910,
-    serps: 1629612
-  }]
-}, {
-  location_code: 2051,
-  location_name: "Armenia",
-  location_code_parent: null,
-  country_iso_code: "AM",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Armenian",
-    language_code: "hy",
-    keywords: 3173575,
-    serps: 205286
-  }]
-}, {
-  location_code: 2056,
-  location_name: "Belgium",
-  location_code_parent: null,
-  country_iso_code: "BE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 28110749,
-    serps: 270395
-  }, {
-    available_sources: ["google"],
-    language_name: "Dutch",
-    language_code: "nl",
-    keywords: 62941909,
-    serps: 3184448
-  }, {
-    available_sources: ["google"],
-    language_name: "German",
-    language_code: "de",
-    keywords: 19067983,
-    serps: 562054
-  }]
-}, {
-  location_code: 2068,
-  location_name: "Bolivia",
-  location_code_parent: null,
-  country_iso_code: "BO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 8167019,
-    serps: 309283
-  }]
-}, {
-  location_code: 2076,
-  location_name: "Brazil",
-  location_code_parent: null,
-  country_iso_code: "BR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Portuguese",
-    language_code: "pt",
-    keywords: 152420192,
-    serps: 13242792
-  }]
-}, {
-  location_code: 2100,
-  location_name: "Bulgaria",
-  location_code_parent: null,
-  country_iso_code: "BG",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Bulgarian",
-    language_code: "bg",
-    keywords: 7392850,
-    serps: 408659
-  }]
-}, {
-  location_code: 2104,
-  location_name: "Myanmar (Burma)",
-  location_code_parent: null,
-  country_iso_code: "MM",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 14403082,
-    serps: 618901
-  }]
-}, {
-  location_code: 2116,
-  location_name: "Cambodia",
-  location_code_parent: null,
-  country_iso_code: "KH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 14608384,
-    serps: 617234
-  }]
-}, {
-  location_code: 2120,
-  location_name: "Cameroon",
-  location_code_parent: null,
-  country_iso_code: "CM",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 6563339,
-    serps: 412689
-  }]
-}, {
-  location_code: 2124,
-  location_name: "Canada",
-  location_code_parent: null,
-  country_iso_code: "CA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 281093636,
-    serps: 17000864
-  }, {
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 150512524,
-    serps: 7982590
-  }]
-}, {
-  location_code: 2144,
-  location_name: "Sri Lanka",
-  location_code_parent: null,
-  country_iso_code: "LK",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 16185449,
-    serps: 588684
-  }]
-}, {
-  location_code: 2152,
-  location_name: "Chile",
-  location_code_parent: null,
-  country_iso_code: "CL",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 42330407,
-    serps: 1686674
-  }]
-}, {
-  location_code: 2158,
-  location_name: "Taiwan",
-  location_code_parent: null,
-  country_iso_code: "TW",
-  location_type: "Region",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Chinese (Traditional)",
-    language_code: "zh-TW",
-    keywords: 49960219,
-    serps: 4347068
-  }]
-}, {
-  location_code: 2170,
-  location_name: "Colombia",
-  location_code_parent: null,
-  country_iso_code: "CO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 51178738,
-    serps: 2038152
-  }]
-}, {
-  location_code: 2188,
-  location_name: "Costa Rica",
-  location_code_parent: null,
-  country_iso_code: "CR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 13198489,
-    serps: 500183
-  }]
-}, {
-  location_code: 2191,
-  location_name: "Croatia",
-  location_code_parent: null,
-  country_iso_code: "HR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Croatian",
-    language_code: "hr",
-    keywords: 7033439,
-    serps: 398780
-  }]
-}, {
-  location_code: 2196,
-  location_name: "Cyprus",
-  location_code_parent: null,
-  country_iso_code: "CY",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Greek",
-    language_code: "el",
-    keywords: 18085085,
-    serps: 295261
-  }, {
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 14720239,
-    serps: 295006
-  }]
-}, {
-  location_code: 2203,
-  location_name: "Czechia",
-  location_code_parent: null,
-  country_iso_code: "CZ",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Czech",
-    language_code: "cs",
-    keywords: 19150991,
-    serps: 1471412
-  }]
-}, {
-  location_code: 2208,
-  location_name: "Denmark",
-  location_code_parent: null,
-  country_iso_code: "DK",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Danish",
-    language_code: "da",
-    keywords: 27623000,
-    serps: 2425042
-  }]
-}, {
-  location_code: 2218,
-  location_name: "Ecuador",
-  location_code_parent: null,
-  country_iso_code: "EC",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 19037248,
-    serps: 761192
-  }]
-}, {
-  location_code: 2222,
-  location_name: "El Salvador",
-  location_code_parent: null,
-  country_iso_code: "SV",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 7358419,
-    serps: 203313
-  }]
-}, {
-  location_code: 2233,
-  location_name: "Estonia",
-  location_code_parent: null,
-  country_iso_code: "EE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Estonian",
-    language_code: "et",
-    keywords: 3588259,
-    serps: 200576
-  }]
-}, {
-  location_code: 2246,
-  location_name: "Finland",
-  location_code_parent: null,
-  country_iso_code: "FI",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Finnish",
-    language_code: "fi",
-    keywords: 22338359,
-    serps: 1747209
-  }]
-}, {
-  location_code: 2250,
-  location_name: "France",
-  location_code_parent: null,
-  country_iso_code: "FR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 197651726,
-    serps: 18475263
-  }]
-}, {
-  location_code: 2276,
-  location_name: "Germany",
-  location_code_parent: null,
-  country_iso_code: "DE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "German",
-    language_code: "de",
-    keywords: 240240005,
-    serps: 25396742
-  }]
-}, {
-  location_code: 2288,
-  location_name: "Ghana",
-  location_code_parent: null,
-  country_iso_code: "GH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 11119030,
-    serps: 765562
-  }]
-}, {
-  location_code: 2300,
-  location_name: "Greece",
-  location_code_parent: null,
-  country_iso_code: "GR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Greek",
-    language_code: "el",
-    keywords: 19981862,
-    serps: 1443168
-  }, {
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 8496506,
-    serps: 574900
-  }]
-}, {
-  location_code: 2320,
-  location_name: "Guatemala",
-  location_code_parent: null,
-  country_iso_code: "GT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 13254442,
-    serps: 507204
-  }]
-}, {
-  location_code: 2344,
-  location_name: "Hong Kong",
-  location_code_parent: null,
-  country_iso_code: "HK",
-  location_type: "Region",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 28250950,
-    serps: 1162467
-  }, {
-    available_sources: ["google"],
-    language_name: "Chinese (Traditional)",
-    language_code: "zh-TW",
-    keywords: 58224923,
-    serps: 2877302
-  }]
-}, {
-  location_code: 2348,
-  location_name: "Hungary",
-  location_code_parent: null,
-  country_iso_code: "HU",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Hungarian",
-    language_code: "hu",
-    keywords: 14272631,
-    serps: 965289
-  }]
-}, {
-  location_code: 2356,
-  location_name: "India",
-  location_code_parent: null,
-  country_iso_code: "IN",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 251346012,
-    serps: 15730787
-  }, {
-    available_sources: ["google"],
-    language_name: "Hindi",
-    language_code: "hi",
-    keywords: 111964843,
-    serps: 12220344
-  }]
-}, {
-  location_code: 2360,
-  location_name: "Indonesia",
-  location_code_parent: null,
-  country_iso_code: "ID",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 56673639,
-    serps: 3909206
-  }, {
-    available_sources: ["google"],
-    language_name: "Indonesian",
-    language_code: "id",
-    keywords: 92886885,
-    serps: 6680892
-  }]
-}, {
-  location_code: 2372,
-  location_name: "Ireland",
-  location_code_parent: null,
-  country_iso_code: "IE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 57066534,
-    serps: 2100913
-  }]
-}, {
-  location_code: 2376,
-  location_name: "Israel",
-  location_code_parent: null,
-  country_iso_code: "IL",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Hebrew",
-    language_code: "he",
-    keywords: 25729433,
-    serps: 1703331
-  }, {
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 14832153,
-    serps: 591426
-  }]
-}, {
-  location_code: 2380,
-  location_name: "Italy",
-  location_code_parent: null,
-  country_iso_code: "IT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Italian",
-    language_code: "it",
-    keywords: 124976032,
-    serps: 10908333
-  }]
-}, {
-  location_code: 2384,
-  location_name: "Cote d'Ivoire",
-  location_code_parent: null,
-  country_iso_code: "CI",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 8367580,
-    serps: 699355
-  }]
-}, {
-  location_code: 2392,
-  location_name: "Japan",
-  location_code_parent: null,
-  country_iso_code: "JP",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Japanese",
-    language_code: "ja",
-    keywords: 248710906,
-    serps: 17834609
-  }]
-}, {
-  location_code: 2398,
-  location_name: "Kazakhstan",
-  location_code_parent: null,
-  country_iso_code: "KZ",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Russian",
-    language_code: "ru",
-    keywords: 15594480,
-    serps: 812523
-  }]
-}, {
-  location_code: 2400,
-  location_name: "Jordan",
-  location_code_parent: null,
-  country_iso_code: "JO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 8337661,
-    serps: 408283
-  }]
-}, {
-  location_code: 2404,
-  location_name: "Kenya",
-  location_code_parent: null,
-  country_iso_code: "KE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 23132963,
-    serps: 1190988
-  }]
-}, {
-  location_code: 2410,
-  location_name: "South Korea",
-  location_code_parent: null,
-  country_iso_code: "KR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Korean",
-    language_code: "ko",
-    keywords: 53026115,
-    serps: 7700108
-  }]
-}, {
-  location_code: 2428,
-  location_name: "Latvia",
-  location_code_parent: null,
-  country_iso_code: "LV",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Latvian",
-    language_code: "lv",
-    keywords: 9281433,
-    serps: 398821
-  }]
-}, {
-  location_code: 2440,
-  location_name: "Lithuania",
-  location_code_parent: null,
-  country_iso_code: "LT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Lithuanian",
-    language_code: "lt",
-    keywords: 6293543,
-    serps: 592342
-  }]
-}, {
-  location_code: 2458,
-  location_name: "Malaysia",
-  location_code_parent: null,
-  country_iso_code: "MY",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 43397922,
-    serps: 1727283
-  }, {
-    available_sources: ["google"],
-    language_name: "Malay",
-    language_code: "ms",
-    keywords: 38437485,
-    serps: 2253558
-  }]
-}, {
-  location_code: 2470,
-  location_name: "Malta",
-  location_code_parent: null,
-  country_iso_code: "MT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 3637240,
-    serps: 96686
-  }]
-}, {
-  location_code: 2484,
-  location_name: "Mexico",
-  location_code_parent: null,
-  country_iso_code: "MX",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 97848040,
-    serps: 6689001
-  }]
-}, {
-  location_code: 2504,
-  location_name: "Morocco",
-  location_code_parent: null,
-  country_iso_code: "MA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 12912794,
-    serps: 1025424
-  }, {
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 6736474,
-    serps: 642284
-  }]
-}, {
-  location_code: 2528,
-  location_name: "Netherlands",
-  location_code_parent: null,
-  country_iso_code: "NL",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Dutch",
-    language_code: "nl",
-    keywords: 94051671,
-    serps: 7097181
-  }]
-}, {
-  location_code: 2554,
-  location_name: "New Zealand",
-  location_code_parent: null,
-  country_iso_code: "NZ",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 34935778,
-    serps: 1391120
-  }]
-}, {
-  location_code: 2558,
-  location_name: "Nicaragua",
-  location_code_parent: null,
-  country_iso_code: "NI",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 4010764,
-    serps: 103186
-  }]
-}, {
-  location_code: 2566,
-  location_name: "Nigeria",
-  location_code_parent: null,
-  country_iso_code: "NG",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 20194773,
-    serps: 1160593
-  }]
-}, {
-  location_code: 2578,
-  location_name: "Norway",
-  location_code_parent: null,
-  country_iso_code: "NO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Norwegian (Bokmål)",
-    language_code: "nb",
-    keywords: 29178925,
-    serps: 2675658
-  }]
-}, {
-  location_code: 2586,
-  location_name: "Pakistan",
-  location_code_parent: null,
-  country_iso_code: "PK",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 43014900,
-    serps: 1209520
-  }, {
-    available_sources: ["google"],
-    language_name: "Urdu",
-    language_code: "ur",
-    keywords: 19767425,
-    serps: 296893
-  }]
-}, {
-  location_code: 2591,
-  location_name: "Panama",
-  location_code_parent: null,
-  country_iso_code: "PA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 8207260,
-    serps: 612262
-  }]
-}, {
-  location_code: 2600,
-  location_name: "Paraguay",
-  location_code_parent: null,
-  country_iso_code: "PY",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 6885183,
-    serps: 201677
-  }]
-}, {
-  location_code: 2604,
-  location_name: "Peru",
-  location_code_parent: null,
-  country_iso_code: "PE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 36724085,
-    serps: 1379359
-  }]
-}, {
-  location_code: 2608,
-  location_name: "Philippines",
-  location_code_parent: null,
-  country_iso_code: "PH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 42286131,
-    serps: 1678641
-  }, {
-    available_sources: ["google"],
-    language_name: "Tagalog",
-    language_code: "tl",
-    keywords: 36649343,
-    serps: 1679044
-  }]
-}, {
-  location_code: 2616,
-  location_name: "Poland",
-  location_code_parent: null,
-  country_iso_code: "PL",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Polish",
-    language_code: "pl",
-    keywords: 44656543,
-    serps: 3599039
-  }]
-}, {
-  location_code: 2620,
-  location_name: "Portugal",
-  location_code_parent: null,
-  country_iso_code: "PT",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Portuguese",
-    language_code: "pt",
-    keywords: 31428242,
-    serps: 1540712
-  }]
-}, {
-  location_code: 2642,
-  location_name: "Romania",
-  location_code_parent: null,
-  country_iso_code: "RO",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Romanian",
-    language_code: "ro",
-    keywords: 18959469,
-    serps: 1403879
-  }]
-}, {
-  location_code: 2682,
-  location_name: "Saudi Arabia",
-  location_code_parent: null,
-  country_iso_code: "SA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google", "amazon"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 40502327,
-    serps: 4494876
-  }]
-}, {
-  location_code: 2686,
-  location_name: "Senegal",
-  location_code_parent: null,
-  country_iso_code: "SN",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 4984430,
-    serps: 309534
-  }]
-}, {
-  location_code: 2688,
-  location_name: "Serbia",
-  location_code_parent: null,
-  country_iso_code: "RS",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Serbian",
-    language_code: "sr",
-    keywords: 5626811,
-    serps: 302187
-  }]
-}, {
-  location_code: 2702,
-  location_name: "Singapore",
-  location_code_parent: null,
-  country_iso_code: "SG",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 63287136,
-    serps: 2154728
-  }, {
-    available_sources: ["google"],
-    language_name: "Chinese (Simplified)",
-    language_code: "zh-CN",
-    keywords: 27953082,
-    serps: 572173
-  }]
-}, {
-  location_code: 2703,
-  location_name: "Slovakia",
-  location_code_parent: null,
-  country_iso_code: "SK",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Slovak",
-    language_code: "sk",
-    keywords: 9772098,
-    serps: 677290
-  }]
-}, {
-  location_code: 2704,
-  location_name: "Vietnam",
-  location_code_parent: null,
-  country_iso_code: "VN",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 16116009,
-    serps: 617905
-  }, {
-    available_sources: ["google"],
-    language_name: "Vietnamese",
-    language_code: "vi",
-    keywords: 34011093,
-    serps: 1487907
-  }]
-}, {
-  location_code: 2705,
-  location_name: "Slovenia",
-  location_code_parent: null,
-  country_iso_code: "SI",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Slovenian",
-    language_code: "sl",
-    keywords: 5788051,
-    serps: 406323
-  }]
-}, {
-  location_code: 2710,
-  location_name: "South Africa",
-  location_code_parent: null,
-  country_iso_code: "ZA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 52503426,
-    serps: 2194862
-  }]
-}, {
-  location_code: 2724,
-  location_name: "Spain",
-  location_code_parent: null,
-  country_iso_code: "ES",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 154274593,
-    serps: 9164861
-  }]
-}, {
-  location_code: 2752,
-  location_name: "Sweden",
-  location_code_parent: null,
-  country_iso_code: "SE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Swedish",
-    language_code: "sv",
-    keywords: 36367859,
-    serps: 3890666
-  }]
-}, {
-  location_code: 2756,
-  location_name: "Switzerland",
-  location_code_parent: null,
-  country_iso_code: "CH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "German",
-    language_code: "de",
-    keywords: 74746082,
-    serps: 3278806
-  }, {
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 73572778,
-    serps: 1517533
-  }, {
-    available_sources: ["google"],
-    language_name: "Italian",
-    language_code: "it",
-    keywords: 11946946,
-    serps: 636774
-  }]
-}, {
-  location_code: 2764,
-  location_name: "Thailand",
-  location_code_parent: null,
-  country_iso_code: "TH",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Thai",
-    language_code: "th",
-    keywords: 40439999,
-    serps: 2944579
-  }]
-}, {
-  location_code: 2784,
-  location_name: "United Arab Emirates",
-  location_code_parent: null,
-  country_iso_code: "AE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google", "amazon"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 33595072,
-    serps: 1176298
-  }, {
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 42858556,
-    serps: 1134571
-  }]
-}, {
-  location_code: 2788,
-  location_name: "Tunisia",
-  location_code_parent: null,
-  country_iso_code: "TN",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 8833665,
-    serps: 308982
-  }]
-}, {
-  location_code: 2792,
-  location_name: "Turkiye",
-  location_code_parent: null,
-  country_iso_code: "TR",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Turkish",
-    language_code: "tr",
-    keywords: 47243556,
-    serps: 5363240
-  }]
-}, {
-  location_code: 2804,
-  location_name: "Ukraine",
-  location_code_parent: null,
-  country_iso_code: "UA",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Ukrainian",
-    language_code: "uk",
-    keywords: 125981767,
-    serps: 11210153
-  }, {
-    available_sources: ["google"],
-    language_name: "Russian",
-    language_code: "ru",
-    keywords: 107102520,
-    serps: 5570544
-  }]
-}, {
-  location_code: 2807,
-  location_name: "North Macedonia",
-  location_code_parent: null,
-  country_iso_code: "MK",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Macedonian",
-    language_code: "mk",
-    keywords: 9253171,
-    serps: 211835
-  }]
-}, {
-  location_code: 2818,
-  location_name: "Egypt",
-  location_code_parent: null,
-  country_iso_code: "EG",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google", "amazon"],
-    language_name: "Arabic",
-    language_code: "ar",
-    keywords: 30975983,
-    serps: 2272646
-  }, {
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 20006037,
-    serps: 1188469
-  }]
-}, {
-  location_code: 2826,
-  location_name: "United Kingdom",
-  location_code_parent: null,
-  country_iso_code: "GB",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 410275684,
-    serps: 33898330
-  }]
-}, {
-  location_code: 2840,
-  location_name: "United States",
-  location_code_parent: null,
-  country_iso_code: "US",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google", "bing", "amazon"],
-    language_name: "English",
-    language_code: "en",
-    keywords: 1062553459,
-    serps: 190262342
-  }, {
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 138516859,
-    serps: 5567815
-  }]
-}, {
-  location_code: 2854,
-  location_name: "Burkina Faso",
-  location_code_parent: null,
-  country_iso_code: "BF",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "French",
-    language_code: "fr",
-    keywords: 4794260,
-    serps: 318704
-  }]
-}, {
-  location_code: 2858,
-  location_name: "Uruguay",
-  location_code_parent: null,
-  country_iso_code: "UY",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 12005906,
-    serps: 390245
-  }]
-}, {
-  location_code: 2862,
-  location_name: "Venezuela",
-  location_code_parent: null,
-  country_iso_code: "VE",
-  location_type: "Country",
-  available_languages: [{
-    available_sources: ["google"],
-    language_name: "Spanish",
-    language_code: "es",
-    keywords: 43250498,
-    serps: 2243352
-  }]
-}];
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (locations);
-
-/***/ }),
-
 /***/ "./node_modules/papaparse/papaparse.min.js":
 /*!*************************************************!*\
   !*** ./node_modules/papaparse/papaparse.min.js ***!
@@ -12951,20 +11594,18 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!*************************************!*\
-  !*** ./src/ranked-keywords/view.js ***!
-  \*************************************/
+/*!******************************************!*\
+  !*** ./src/citation-finder copy/view.js ***!
+  \******************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "react-dom");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
-/* harmony import */ var _utils_locations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils/locations */ "./src/ranked-keywords/utils/locations.js");
-/* harmony import */ var _utils_flattenData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/flattenData */ "./src/ranked-keywords/utils/flattenData.js");
+/* harmony import */ var react_icons_fa__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-icons/fa */ "./node_modules/react-icons/fa/index.mjs");
 
 
 
@@ -12973,29 +11614,23 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-const block = document.querySelectorAll(".ranked-keywords-update");
+const block = document.querySelectorAll(".citation-finder-update");
 block.forEach(function (el) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1___default().render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(RankedKeywords, null), el);
-  el.classList.remove("ranked-keywords-update");
+  react_dom__WEBPACK_IMPORTED_MODULE_1___default().render((0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(CitationFinder, null), el);
+  el.classList.remove("citation-finder-update");
 });
-function RankedKeywords() {
+function CitationFinder() {
   const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [error, setError] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [results, setResults] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
   const [filename, setFilename] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
+  const [viewTable, setViewTable] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
   const [items, setItems] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
   const [time, setTime] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [currentID, setCurrentID] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [credits, setCredits] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0);
   const [submitting, setSubmitting] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-  const [availableLanguages, setAvailableLanguages] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
-  const [location, setLocation] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(2840);
-  const [language, setLanguage] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("en");
-  const [historicalSerpMode, setHistoricalSerpMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("live");
-  const allLanguages = _utils_locations__WEBPACK_IMPORTED_MODULE_3__["default"];
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(async () => {
@@ -13003,21 +11638,15 @@ function RankedKeywords() {
     await getSavedResults();
     setSubmitting(false);
   }, []);
-  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    if (location) {
-      const locationLanguages = allLanguages.find(loc => loc.location_code === location);
-      setAvailableLanguages(locationLanguages ? locationLanguages.available_languages : []);
-      setLanguage(locationLanguages.available_languages[0].language_code);
-    }
-  }, [location, allLanguages]);
   async function getSavedResults() {
     try {
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
+      setLoading(true);
+      const response = await axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/get-csv`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         },
         params: {
-          request_type: "ranked-keywords"
+          request_type: "citation-finder"
         }
       });
       if (!response.statusText === "OK") {
@@ -13039,25 +11668,18 @@ function RankedKeywords() {
       setLoading(false);
     }
   }
-  async function getResults(params) {
+  async function getResults(keyword) {
     try {
+      setViewTable(false);
       setResults(null);
       setError(null);
       setLoading(true);
-      const {
-        formData,
-        location,
-        historicalSerpMode
-      } = params;
-      const urlPattern = new RegExp("^((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,})$",
-      // domain name and extension
-      "i");
-      if (!formData.target || formData.target === "" || !urlPattern.test(formData.target)) {
-        setError("Please enter a target URL without 'https://' or 'www.'");
+      if (!keyword || keyword === "") {
+        setError("Please enter a keyword");
         setLoading(false);
         return;
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_3__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/citation-finder?kw=${keyword}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -13068,46 +11690,28 @@ function RankedKeywords() {
         return;
       } else {
         const data = response.data;
-        if (data.tasks[0].result === null) {
-          setError("Task executed successfully but no data was found, please check target URL and try again.");
-          setLoading(false);
-          return;
-        }
         const items = data.tasks[0].result[0].items;
-        let firstInstance = true;
-        if (!items || items.length === 0) {
-          setError("Task executed successfully but no data was found, please check target URL and try again.");
-          setLoading(false);
-          return;
-        }
-        const csvData = items.map(item => {
-          const newItem = {
-            target: firstInstance ? formData.target : "",
-            ...item
-          };
-          firstInstance = false;
-          return newItem;
-        });
-        let flatData = (0,_utils_flattenData__WEBPACK_IMPORTED_MODULE_4__.flattenData)(csvData);
-        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(flatData);
+        const csvData = items.map((item, index) => ({
+          Keyword: index === 0 ? formData.keyword : "",
+          URL: item.url ? item.url : "No url found"
+        }));
+        let csv = papaparse__WEBPACK_IMPORTED_MODULE_2___default().unparse(csvData);
         let csvBlob = new Blob([csv], {
           type: "text/csv;charset=utf-8;"
         });
         let csvUrl = URL.createObjectURL(csvBlob);
         let date = new Date();
         let formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-        let url = new URL(`https://${formData.target}`);
-        let formattedHostName = url.hostname.replace("www.", "");
         let reader = new FileReader();
         reader.readAsDataURL(csvBlob);
         reader.onloadend = function () {
           let base64data = reader.result.split(",")[1]; // Remove the data URL prefix
 
-          axios__WEBPACK_IMPORTED_MODULE_5__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
+          axios__WEBPACK_IMPORTED_MODULE_3__["default"].post(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/upload-csv`, {
             csv_data: base64data,
-            file_name: `${formattedDate}-${formattedHostName}`,
+            file_name: `${formattedDate}-${formData.keyword}`,
             cost: data.cost,
-            request_type: "ranked-keywords"
+            request_type: "citation-finder"
           }, {
             headers: {
               "X-WP-Nonce": site_url.nonce,
@@ -13139,14 +11743,9 @@ function RankedKeywords() {
       [e.target.name]: e.target.value
     });
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    getResults({
-      formData,
-      location,
-      language,
-      historicalSerpMode
-    });
+    getResults(formData.keyword);
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "container mb-5"
@@ -13155,94 +11754,23 @@ function RankedKeywords() {
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("form", {
     onSubmit: handleSubmit
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "row mb-3"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
+    className: "mb-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    for: "target",
     class: "form-label"
-  }, "Target:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+  }, "Keywords:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
-    "data-bs-title": "The domain name of the target website. The domain should be specified without 'https://' and 'www.'"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    "data-bs-title": "You can specify up to 1000 keywords by using comma as a delimeter."
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
     type: "text",
-    name: "target",
-    id: "target",
+    name: "keyword",
     className: "form-control",
-    placeholder: "ex. localdominator.co",
+    placeholder: "ex. Weather control",
     onChange: handleChange,
     disabled: loading,
     required: true
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "row mb-3"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    for: "location",
-    class: "form-label"
-  }, "Location:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    "data-bs-toggle": "tooltip",
-    "data-bs-placement": "top",
-    "data-bs-title": "Search engine location."
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    className: "form-select",
-    id: "location",
-    value: location,
-    onChange: e => {
-      setLocation(+e.target.value);
-    },
-    disabled: loading
-  }, allLanguages.map(loc => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: loc.location_code
-  }, loc.location_name)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    for: "language",
-    class: "form-label"
-  }, "Language:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    "data-bs-toggle": "tooltip",
-    "data-bs-placement": "top",
-    "data-bs-title": "Search engine language."
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    className: "form-select",
-    id: "language",
-    onChange: e => {
-      setLanguage(e.target.value);
-    },
-    disabled: loading
-  }, availableLanguages.map(lang => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: lang.language_code
-  }, lang.language_name))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "row mb-3"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("label", {
-    for: "historicalSerpMode",
-    class: "form-label"
-  }, "Historical SERP Mode:", " ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
-    "data-bs-toggle": "tooltip",
-    "data-bs-placement": "top",
-    "data-bs-title": "'live' \u2014 return keywords for which the specified target currently has ranking results in SERP; 'lost' \u2014 return keywords for which the specified target had previously had ranking results in SERP, but didn\u2019t have them during the last check; 'all' \u2014 return both types of keywords."
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaInfoCircle, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("select", {
-    className: "form-select",
-    id: "historicalSerpMode",
-    onChange: e => {
-      setHistoricalSerpMode(e.target.value);
-    },
-    disabled: loading
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: "live"
-  }, "Live"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: "lost"
-  }, "Lost"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
-    value: "all"
-  }, "All"))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "row mb-3"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "col"
+    className: "mb-3"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     type: "submit",
     className: "btn btn-success w-100",
@@ -13251,7 +11779,7 @@ function RankedKeywords() {
     className: "spinner-border spinner-border-sm",
     role: "status",
     "aria-hidden": "true"
-  }) : "Submit")))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }) : "Submit"))), error && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-danger"
   }, error), items && items.length > 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, submitting && !loading && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, "This task took ", (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("strong", null, time), " ", time === 1 ? "second" : "seconds", " to complete."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", {
     className: "mb-2"
@@ -13277,16 +11805,16 @@ function RankedKeywords() {
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "Download csv"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaDownload, null))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("td", {
     className: "text-truncate"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
-    href: `${site_url.root_url}/results/?id=${item.id}&type=ranked-keywords`,
+    href: `${site_url.root_url}/results/?id=${item.id}&type=citation-finder`,
     className: "btn btn-link",
     target: "_blank",
     "data-bs-toggle": "tooltip",
     "data-bs-placement": "top",
     "data-bs-title": "View file in new tab"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_6__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react_icons_fa__WEBPACK_IMPORTED_MODULE_4__.FaEye, null))))))))) : !submitting && items && items.length === 0 ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "alert alert-info"
   }, "No saved results found.") : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center gap-2"
