@@ -412,7 +412,7 @@ function RankedKeywords() {
 											</td>
 											<td className="text-truncate">
 												<a
-													href={`${site_url.root_url}/results/?id=${item.id}&type=citation-finder`}
+													href={`${site_url.root_url}/results/?id=${item.id}&type=ranked-keywords`}
 													className="btn btn-link"
 													target="_blank"
 													data-bs-toggle="tooltip"
@@ -428,7 +428,7 @@ function RankedKeywords() {
 							</table>
 						</div>
 					</>
-				) : !loading && items && items.length === 0 ? (
+				) : !submitting && items && items.length === 0 ? (
 					<div className="alert alert-info">No saved results found.</div>
 				) : (
 					<div className="d-flex align-items-center gap-2">
