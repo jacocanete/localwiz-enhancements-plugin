@@ -6,6 +6,7 @@ import { FaEye } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa";
 import { FaInfoCircle } from "react-icons/fa";
 import { flattenData } from "./utils/flattenData";
+import { isValidUrl } from "./utils/isValidUrl";
 
 const block = document.querySelectorAll(".instant-pages-update");
 
@@ -81,18 +82,7 @@ function InstantPages() {
 			setError(null);
 			setLoading(true);
 
-			const urlPattern = new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name and extension
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?" + // port
-					"(\\/[-a-z\\d%_.~+]*)*" + // path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
-				"i",
-			); // fragment locator
-
-			if (!url || url === "" || !urlPattern.test(url)) {
+			if (!isValidUrl(url)) {
 				setError(
 					"Please enter a valid URL. Make sure to include http:// or https://",
 				);
@@ -313,7 +303,7 @@ function InstantPages() {
 											</td>
 											<td className="text-truncate">
 												<a
-													href={`${site_url.root_url}/results/?id=${item.id}&type=citation-finder`}
+													href={`${site_url.root_url}/results/?id=${item.id}&type=instant-pages`}
 													className="btn btn-link"
 													target="_blank"
 													data-bs-toggle="tooltip"
