@@ -18,7 +18,7 @@ function BacklinksExplorer() {
 	const [mode, setMode] = useState("1");
 	const [subdomains, setSubdomains] = useState("1");
 	const [includeIndirectLinks, setIncludeIndirectLinks] = useState("1");
-	const [backlinkStatusType, setBacklinkStatusType] = useState("1");
+	const [backlinkStatusType, setBacklinkStatusType] = useState("2");
 	const [internalListLimit, setInternalListLimit] = useState("10");
 	const [formData, setFormData] = useState({});
 	const [loading, setLoading] = useState(false);
@@ -150,6 +150,8 @@ function BacklinksExplorer() {
 				backlinkStatusTypeValue = "all";
 			} else if (backlinkStatusType === "2") {
 				backlinkStatusTypeValue = "live";
+			} else if (backlinkStatusType === "3") {
+				backlinkStatusTypeValue = "lost";
 			}
 
 			if (subdomains === "1") {
@@ -173,7 +175,7 @@ function BacklinksExplorer() {
 			}
 
 			const response = await axios.get(
-				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v2/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`,
 				{
 					headers: {
 						"X-WP-Nonce": site_url.nonce,
@@ -185,16 +187,13 @@ function BacklinksExplorer() {
 				setError("Error fetching data");
 				setLoading(false);
 				return;
-			} else if (!response.data.tasks[0].status_message === "OK") {
-				setError(
-					`Error fetching data: "${response.data.tasks[0].status_message}" with status code: ${response.data.tasks[0].status_code}`,
-				);
-				setLoading(false);
-				return;
 			} else {
 				const data = response.data;
+				console.log(response);
 
-				if (data.tasks[0].result === null) {
+				console.log(data);
+
+				if (!data || !data.items || data.items.length === 0) {
 					setError(
 						"Task executed successfully but no data was found, please check target URL and try again.",
 					);
@@ -202,7 +201,7 @@ function BacklinksExplorer() {
 					return;
 				}
 
-				const items = data.tasks[0].result[0].items;
+				const items = data.items;
 
 				let firstInstance = true;
 
@@ -272,11 +271,6 @@ function BacklinksExplorer() {
 				setTime(parseFloat(data.time));
 			}
 		} catch (e) {
-			if (e.response.data.code === "balance_error") {
-				setError("Insufficient credits to complete this task.");
-				setLoading(false);
-				return;
-			}
 			setError(`Unable to fetch data: ${e.message}`);
 			console.log(e);
 			setLoading(false);
@@ -309,6 +303,7 @@ function BacklinksExplorer() {
 									setFormData({ ...formData, target: e.target.value })
 								}
 								disabled={loading}
+								value={formData.target}
 								required
 							/>
 						</div>
@@ -355,6 +350,7 @@ function BacklinksExplorer() {
 								id="includeSubdomains"
 								onChange={(e) => setSubdomains(e.target.value)}
 								disabled={loading}
+								value={subdomains}
 							>
 								<option value="1">Enable</option>
 								<option value="2">Disable</option>
@@ -379,6 +375,7 @@ function BacklinksExplorer() {
 								id="includeIndirectLinks"
 								onChange={(e) => setIncludeIndirectLinks(e.target.value)}
 								disabled={loading}
+								value={includeIndirectLinks}
 							>
 								<option value="1">Enable</option>
 								<option value="2">Disable</option>
@@ -400,6 +397,7 @@ function BacklinksExplorer() {
 								id="backlinkStatusType"
 								onChange={(e) => setBacklinkStatusType(e.target.value)}
 								disabled={loading}
+								value={backlinkStatusType}
 							>
 								<option value="1">All</option>
 								<option value="2">Live</option>

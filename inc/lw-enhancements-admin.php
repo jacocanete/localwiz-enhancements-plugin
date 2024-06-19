@@ -105,10 +105,10 @@ class LW_Enhancements_Admin
         add_user_meta(get_current_user_id(), 'lw-enhancements-credits', 1000, true);
     }
 
-    // public function zeroBalance()
-    // {
-    //     update_user_meta(get_current_user_id(), 'lw-enhancements-credits', 50);
-    // }
+    public function zeroBalance()
+    {
+        update_user_meta(get_current_user_id(), 'lw-enhancements-credits', 50);
+    }
 
     public function init_db()
     {
@@ -122,7 +122,7 @@ class LW_Enhancements_Admin
             request_type varchar(255) NOT NULL DEFAULT '',
             file_name varchar(255) NOT NULL DEFAULT '',
             csv_url varchar(255) NOT NULL DEFAULT '',
-            cost bigint(20) unsigned NOT NULL,
+            cost double NOT NULL,
             PRIMARY KEY  (id)
         ) $this->charset;");
     }

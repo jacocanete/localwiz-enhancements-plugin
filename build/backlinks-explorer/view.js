@@ -11652,7 +11652,7 @@ function BacklinksExplorer() {
   const [mode, setMode] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("1");
   const [subdomains, setSubdomains] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("1");
   const [includeIndirectLinks, setIncludeIndirectLinks] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("1");
-  const [backlinkStatusType, setBacklinkStatusType] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("1");
+  const [backlinkStatusType, setBacklinkStatusType] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("2");
   const [internalListLimit, setInternalListLimit] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("10");
   const [formData, setFormData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({});
   const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
@@ -11760,6 +11760,8 @@ function BacklinksExplorer() {
         backlinkStatusTypeValue = "all";
       } else if (backlinkStatusType === "2") {
         backlinkStatusTypeValue = "live";
+      } else if (backlinkStatusType === "3") {
+        backlinkStatusTypeValue = "lost";
       }
       if (subdomains === "1") {
         subdomainsValue = true;
@@ -11778,7 +11780,7 @@ function BacklinksExplorer() {
       } else if (mode === "3") {
         modeValue = "one_per_anchor";
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v2/backlinks-explorer?t=${formData.target}&is=${subdomainsValue}&iil=${includeIndirectLinksValue}&bst=${backlinkStatusTypeValue}&ill=${internalListLimit}&m=${modeValue}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -11787,18 +11789,16 @@ function BacklinksExplorer() {
         setError("Error fetching data");
         setLoading(false);
         return;
-      } else if (!response.data.tasks[0].status_message === "OK") {
-        setError(`Error fetching data: "${response.data.tasks[0].status_message}" with status code: ${response.data.tasks[0].status_code}`);
-        setLoading(false);
-        return;
       } else {
         const data = response.data;
-        if (data.tasks[0].result === null) {
+        console.log(response);
+        console.log(data);
+        if (!data || !data.items || data.items.length === 0) {
           setError("Task executed successfully but no data was found, please check target URL and try again.");
           setLoading(false);
           return;
         }
-        const items = data.tasks[0].result[0].items;
+        const items = data.items;
         let firstInstance = true;
         if (!items || items.length === 0) {
           setError("Task executed successfully but no data was found, please check target URL and try again.");
@@ -11848,11 +11848,6 @@ function BacklinksExplorer() {
         setTime(parseFloat(data.time));
       }
     } catch (e) {
-      if (e.response.data.code === "balance_error") {
-        setError("Insufficient credits to complete this task.");
-        setLoading(false);
-        return;
-      }
       setError(`Unable to fetch data: ${e.message}`);
       console.log(e);
       setLoading(false);
@@ -11886,6 +11881,7 @@ function BacklinksExplorer() {
       target: e.target.value
     }),
     disabled: loading,
+    value: formData.target,
     required: true
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "row mb-3"
@@ -11925,7 +11921,8 @@ function BacklinksExplorer() {
     "aria-label": "Default select example",
     id: "includeSubdomains",
     onChange: e => setSubdomains(e.target.value),
-    disabled: loading
+    disabled: loading,
+    value: subdomains
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: "1"
   }, "Enable"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
@@ -11946,7 +11943,8 @@ function BacklinksExplorer() {
     "aria-label": "Default select example",
     id: "includeIndirectLinks",
     onChange: e => setIncludeIndirectLinks(e.target.value),
-    disabled: loading
+    disabled: loading,
+    value: includeIndirectLinks
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: "1"
   }, "Enable"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
@@ -11964,7 +11962,8 @@ function BacklinksExplorer() {
     className: "form-select",
     id: "backlinkStatusType",
     onChange: e => setBacklinkStatusType(e.target.value),
-    disabled: loading
+    disabled: loading,
+    value: backlinkStatusType
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {
     value: "1"
   }, "All"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("option", {

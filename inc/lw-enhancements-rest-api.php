@@ -46,6 +46,16 @@ class LW_Enhancements_REST_API
             )
         );
 
+        register_rest_route(
+            'localwiz-enhancements/v2',
+            'backlinks-explorer',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'backlinks_explorer_v2'),
+                'permission_callback' => array($this, 'verify_nonce')
+            )
+        );
+
         // register_rest_route(
         //     'localwiz-enhancements/v1',
         //     'backlinks-explorer-test',
@@ -414,6 +424,10 @@ class LW_Enhancements_REST_API
 
         $responseArray = json_decode($response, true);
 
+        error_log('response: ' . print_r($response, true));
+
+        // error_log('responseArray: ' . print_r($responseArray, true));
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             wp_send_json(array('error' => 'Invalid JSON response'));
             return;
@@ -436,6 +450,149 @@ class LW_Enhancements_REST_API
             $credits_balance -= $cost;
             update_user_meta($user_id, $meta_key, $credits_balance);
         }
+
+        wp_send_json($responseArray);
+    }
+
+    public function backlinks_explorer_v2($params)
+    {
+        error_log('backlinks_explorer called');
+
+        $total_count = 0;
+        $itemsArray = array();
+        $responseArray = array();
+        $total_time = 0;
+        $total_cost = 0;
+        $current_item_count = 0;
+        $iteration = 0;
+        $offset = 0;
+        $user_id = get_current_user_id();
+        $username = get_option('lw-enhancements-username');
+        $password = get_option('lw-enhancements-password');
+
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        do {
+
+            if ($useCredits) {
+                $user_id = get_current_user_id();
+                $meta_key = 'lw-enhancements-credits';
+                $credits_balance = floatval(get_user_meta($user_id, $meta_key, true));
+
+                // Assuming a default cost as we don't know the actual cost before the request
+                $defaultCost = 0.1;
+
+                if ($credits_balance < $defaultCost) {
+                    if ($iteration > 0) {
+                        break;
+                    } else {
+                        return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+                        exit;
+                    }
+                }
+            }
+
+            $curl = curl_init();
+
+            $postFields = json_encode(
+                array(
+                    array(
+                        "target" => sanitize_text_field($params['t']),
+                        "include_subdomains" => sanitize_text_field($params['is']),
+                        "include_indirect_links" => sanitize_text_field($params['iil']),
+                        "backlinks_status_type" => sanitize_text_field($params['bst']),
+                        "internal_list_limit" => sanitize_text_field($params['ill']),
+                        "mode" => sanitize_text_field($params['m']),
+                        "limit" => 1000,
+                        "offset" => $offset
+                    )
+                )
+            );
+
+            $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/backlinks/backlinks/live' : 'https://sandbox.dataforseo.com/v3/backlinks/backlinks/live';
+
+            curl_setopt_array(
+                $curl,
+                array(
+                    CURLOPT_URL => $apiUrl,
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $postFields,
+                    CURLOPT_HTTPHEADER => array(
+                        "Authorization: Basic " . base64_encode($username . ":" . $password),
+                        "Content-Type: application/json"
+                    ),
+                )
+            );
+
+            $response = curl_exec($curl);
+
+            if ($response === false) {
+                $error = curl_error($curl);
+                curl_close($curl);
+                wp_send_json(array('error' => $error));
+                return;
+            }
+
+            curl_close($curl);
+
+            $currentResponseArray = json_decode($response, true); // convert JSON to PHP array
+
+            // error_log('currentResponseArray: ' . print_r($currentResponseArray, true));
+
+            $current_item_count += $currentResponseArray['tasks'][0]['result'][0]['items_count']; // 100 -> 200 -> 300 -> 400 -> 500
+
+            $total_count = $currentResponseArray['tasks'][0]['result'][0]['total_count']; // 500
+
+            error_log('current_item_count: ' . print_r($current_item_count, true));
+            error_log('total_count: ' . print_r($total_count, true));
+            error_log('offset: ' . print_r($offset, true));
+
+            $itemsArray = array_merge($itemsArray, $currentResponseArray['tasks'][0]['result'][0]['items']);
+            $total_time += $currentResponseArray['time'];
+            $offset = $current_item_count;
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                wp_send_json(array('error' => 'Invalid JSON response'));
+                return;
+            }
+
+            $iteration++;
+
+            // Check if the user has enough credits
+            $meta_key = 'lw-enhancements-credits';
+            $credits_balance = get_user_meta($user_id, $meta_key, true);
+
+            $credits_balance = floatval($credits_balance);
+
+            if (!isset($currentResponseArray['cost'])) {
+                return new WP_Error('cost_error', "Cost not found", array('status' => 500));
+                exit;
+            }
+
+            $cost = $currentResponseArray['cost'] * 5;
+
+            $total_cost += $cost;
+        } while ($current_item_count < $total_count); // 100 < 500 == TRUE so loop continues until it reaches 500 < 500
+
+        if ($useCredits) {
+            $credits_balance -= $total_cost;
+            update_user_meta($user_id, $meta_key, $credits_balance);
+        }
+
+        $responseArray = array(
+            'total_count' => $total_count,
+            'time' => $total_time,
+            'items' => $itemsArray,
+            'cost' => $total_cost
+        );
 
         wp_send_json($responseArray);
     }
@@ -968,6 +1125,9 @@ class LW_Enhancements_REST_API
             return new WP_Error('missing_parameters', 'Cost is required', array('status' => 400));
         }
 
+        error_log('cost: ' . $cost);
+        error_log('cost_type: ' . gettype($cost));
+
         // Check if the file name is set
         $file_name = $request->get_param('file_name');
         if (!isset($file_name)) {
@@ -1027,7 +1187,7 @@ class LW_Enhancements_REST_API
             '%s',
             '%s',
             '%s',
-            '%d'
+            '%f'
         );
 
         $wpdb->insert($table_name, $data, $format);
