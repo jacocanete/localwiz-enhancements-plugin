@@ -116,7 +116,7 @@ function RankedKeywords() {
 			}
 
 			const response = await axios.get(
-				`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`,
+				`${site_url.root_url}/wp-json/localwiz-enhancements/v2/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`,
 				{
 					headers: {
 						"X-WP-Nonce": site_url.nonce,
@@ -131,7 +131,7 @@ function RankedKeywords() {
 			} else {
 				const data = response.data;
 
-				if (data.tasks[0].result === null) {
+				if (!data || !data.items || data.items.length === 0) {
 					setError(
 						"Task executed successfully but no data was found, please check target URL and try again.",
 					);
@@ -139,7 +139,7 @@ function RankedKeywords() {
 					return;
 				}
 
-				const items = data.tasks[0].result[0].items;
+				const items = data.items;
 
 				let firstInstance = true;
 
@@ -206,14 +206,9 @@ function RankedKeywords() {
 						});
 				};
 
-				setTime(parseFloat(data.time));
+				setTime(parseFloat(data.execution_time).toFixed(4));
 			}
 		} catch (e) {
-			if (e.response.data.code === "balance_error") {
-				setError("Insufficient credits to complete this task.");
-				setLoading(false);
-				return;
-			}
 			setError(`Unable to fetch data: ${e.message}`);
 			console.log(e);
 			setLoading(false);
@@ -229,6 +224,7 @@ function RankedKeywords() {
 
 	function handleSubmit(e) {
 		e.preventDefault();
+		setError(null);
 		getResults({ formData, location, language, historicalSerpMode });
 	}
 
