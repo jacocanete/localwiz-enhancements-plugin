@@ -19980,7 +19980,7 @@ function Results() {
       size: 20,
       color: "red"
     })));
-  })))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })))) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "row table-responsive"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("table", {
     className: "table table-striped table-hover"
@@ -19997,7 +19997,7 @@ function Results() {
     href: value,
     target: "_blank",
     rel: "noreferrer"
-  }, value) : typeof value === "boolean" ? value.toString() : typeof value === "object" ? JSON.stringify(value) : value)))))), tableData.length > 10 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, value) : typeof value === "boolean" ? value.toString() : typeof value === "object" ? JSON.stringify(value) : value))))))), tableData.length > 10 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "d-flex align-items-center justify-content-center"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("nav", {
     "aria-label": "Page navigation example",
