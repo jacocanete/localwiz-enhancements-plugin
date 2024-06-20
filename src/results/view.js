@@ -245,39 +245,45 @@ function Results() {
 								</table>
 							</div>
 						) : (
-							<div className="row table-responsive">
-								<table className="table table-striped table-hover">
-									<thead className="table-dark">
-										<tr>
-											{currentItems.length > 0 &&
-												Object.keys(currentItems[0]).map((key, index) => (
-													<th key={index}>{key}</th>
-												))}
-										</tr>
-									</thead>
-									<tbody>
-										{currentItems.map((item, index) => (
-											<tr key={index}>
-												{Object.values(item).map((value, i) => (
-													<td key={i} className="text-truncate">
-														{typeof value === "string" &&
-														value.startsWith("http") ? (
-															<a href={value} target="_blank" rel="noreferrer">
-																{value}
-															</a>
-														) : typeof value === "boolean" ? (
-															value.toString()
-														) : typeof value === "object" ? (
-															JSON.stringify(value)
-														) : (
-															value
-														)}
-													</td>
-												))}
+							<>
+								<div className="row table-responsive">
+									<table className="table table-striped table-hover">
+										<thead className="table-dark">
+											<tr>
+												{currentItems.length > 0 &&
+													Object.keys(currentItems[0]).map((key, index) => (
+														<th key={index}>{key}</th>
+													))}
 											</tr>
-										))}
-									</tbody>
-								</table>
+										</thead>
+										<tbody>
+											{currentItems.map((item, index) => (
+												<tr key={index}>
+													{Object.values(item).map((value, i) => (
+														<td key={i} className="text-truncate">
+															{typeof value === "string" &&
+															value.startsWith("http") ? (
+																<a
+																	href={value}
+																	target="_blank"
+																	rel="noreferrer"
+																>
+																	{value}
+																</a>
+															) : typeof value === "boolean" ? (
+																value.toString()
+															) : typeof value === "object" ? (
+																JSON.stringify(value)
+															) : (
+																value
+															)}
+														</td>
+													))}
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
 								{tableData.length > 10 && (
 									<div className="d-flex align-items-center justify-content-center">
 										<nav aria-label="Page navigation example" className="mt-4">
@@ -285,7 +291,7 @@ function Results() {
 										</nav>
 									</div>
 								)}
-							</div>
+							</>
 						)}
 					</>
 				)}
