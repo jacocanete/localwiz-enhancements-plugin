@@ -88,6 +88,16 @@ class LW_Enhancements_REST_API
             )
         );
 
+        register_rest_route(
+            'localwiz-enhancements/v2',
+            'ranked-keywords',
+            array(
+                'methods' => WP_REST_SERVER::READABLE,
+                'callback' => array($this, 'ranked_keywords_v2'),
+                'permission_callback' => array($this, 'verify_nonce')
+            )
+        );
+
         // register_rest_route(
         //     'localwiz-enhancements/v1',
         //     'ranked-keywords-test',
@@ -634,7 +644,7 @@ class LW_Enhancements_REST_API
         $useCredits = get_option('lw-enhancements-use-credits') == '1';
 
         // Initial API call to get the total count and first batch of items
-        $initialResponse = $this->make_api_call($params, $offset, $username, $password, $useCredits);
+        $initialResponse = $this->backlinks_api_call($params, $offset, $username, $password, $useCredits);
 
         if ($initialResponse === false) {
             return new WP_Error('initial_request_error', "Initial API request failed", array('status' => 500));
@@ -666,7 +676,7 @@ class LW_Enhancements_REST_API
         $mh = curl_multi_init();
         $handles = [];
         while ($current_item_count < $total_count) {
-            $ch = $this->init_curl_handle($params, $offset, $username, $password, $useCredits);
+            $ch = $this->init_backlinks_api($params, $offset, $username, $password, $useCredits);
             curl_multi_add_handle($mh, $ch);
             $handles[] = $ch;
             $offset += 1000;
@@ -720,7 +730,7 @@ class LW_Enhancements_REST_API
         wp_send_json($responseArray);
     }
 
-    private function make_api_call($params, $offset, $username, $password, $useCredits)
+    private function backlinks_api_call($params, $offset, $username, $password, $useCredits)
     {
         $curl = curl_init();
         $postFields = json_encode(
@@ -771,7 +781,7 @@ class LW_Enhancements_REST_API
         return $response;
     }
 
-    private function init_curl_handle($params, $offset, $username, $password, $useCredits)
+    private function init_backlinks_api($params, $offset, $username, $password, $useCredits)
     {
         $curl = curl_init();
         $postFields = json_encode(
@@ -1003,6 +1013,206 @@ class LW_Enhancements_REST_API
         }
 
         wp_send_json($responseArray);
+    }
+
+    public function ranked_keywords_v2($params)
+    {
+        $start_time = microtime(true);
+
+        error_log('ranked_keywords_v2 called');
+
+        $total_count = 0;
+        $itemsArray = array();
+        $responseArray = array();
+        $total_time = 0;
+        $total_cost = 0;
+        $current_item_count = 0;
+        $offset = 0;
+        $user_id = get_current_user_id();
+        $username = get_option('lw-enhancements-username');
+        $password = get_option('lw-enhancements-password');
+
+        // Check if the user wants to use credits or not
+        $useCredits = get_option('lw-enhancements-use-credits') == '1';
+
+        // Initial API call to get the total count and first batch of items
+        $initialResponse = $this->ranked_keywords_api_call($params, $offset, $username, $password, $useCredits);
+
+        if ($initialResponse === false) {
+            return new WP_Error('initial_request_error', "Initial API request failed", array('status' => 500));
+        }
+
+        $currentResponseArray = json_decode($initialResponse, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            wp_send_json(array('error' => 'Invalid JSON response'));
+            return;
+        }
+
+        $current_item_count += $currentResponseArray['tasks'][0]['result'][0]['items_count'];
+        $total_count = $currentResponseArray['tasks'][0]['result'][0]['total_count'];
+        $itemsArray = array_merge($itemsArray, $currentResponseArray['tasks'][0]['result'][0]['items']);
+        $total_time += $currentResponseArray['time'];
+        $cost = $currentResponseArray['cost'] * 5;
+        $total_cost += $cost;
+
+        if ($useCredits) {
+            $credits_balance = floatval(get_user_meta($user_id, 'lw-enhancements-credits', true));
+            if ($credits_balance < $cost) {
+                return new WP_Error('balance_error', "Insufficient Credits", array('status' => 500));
+            }
+        }
+
+        $offset = $current_item_count;
+
+        // Parallel requests to fetch remaining items
+        $mh = curl_multi_init();
+        $handles = [];
+        while ($current_item_count < $total_count) {
+            $ch = $this->init_ranked_keywords_api($params, $offset, $username, $password, $useCredits);
+            curl_multi_add_handle($mh, $ch);
+            $handles[] = $ch;
+            $offset += 1000;
+            $current_item_count += 1000;
+        }
+
+        // Execute the handles
+        $running = null;
+        do {
+            curl_multi_exec($mh, $running);
+            curl_multi_select($mh);
+        } while ($running > 0);
+
+        // Collect the responses
+        foreach ($handles as $ch) {
+            $response = curl_multi_getcontent($ch);
+            $currentResponseArray = json_decode($response, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                wp_send_json(array('error' => 'Invalid JSON response'));
+                return;
+            }
+
+            $itemsArray = array_merge($itemsArray, $currentResponseArray['tasks'][0]['result'][0]['items']);
+            $total_time += $currentResponseArray['time'];
+            $cost = $currentResponseArray['cost'] * 5;
+            $total_cost += $cost;
+
+            curl_multi_remove_handle($mh, $ch);
+            curl_close($ch);
+        }
+
+        curl_multi_close($mh);
+
+        // Deduct credits if applicable
+        if ($useCredits) {
+            $credits_balance -= $total_cost;
+            update_user_meta($user_id, 'lw-enhancements-credits', $credits_balance);
+        }
+
+        $end_time = microtime(true);
+        $execution_time = $end_time - $start_time;
+
+        $responseArray = array(
+            'total_count' => $total_count,
+            'time' => $total_time,
+            'items' => $itemsArray,
+            'cost' => $total_cost,
+            'execution_time' => $execution_time
+        );
+
+        wp_send_json($responseArray);
+    }
+
+    private function ranked_keywords_api_call($params, $offset, $username, $password, $useCredits)
+    {
+        $curl = curl_init();
+        $postFields = json_encode(
+            array(
+                array(
+                    "target" => sanitize_text_field($params['t']),
+                    "location_code" => sanitize_text_field($params['loc']),
+                    "language_code" => sanitize_text_field($params['lang']),
+                    "historical_serp_mode" => sanitize_text_field($params['hsm']),
+                    "ignore_synonyms" => false,
+                    "load_rank_absolute" => false,
+                    "limit" => 1000,
+                    "offset" => $offset
+                )
+            )
+        );
+
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live' : 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $apiUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode($username . ":" . $password),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        $response = curl_exec($curl);
+        if ($response === false) {
+            $error = curl_error($curl);
+            curl_close($curl);
+            error_log('cURL error: ' . $error);
+            return false;
+        }
+
+        curl_close($curl);
+        return $response;
+    }
+
+    private function init_ranked_keywords_api($params, $offset, $username, $password, $useCredits)
+    {
+        $curl = curl_init();
+        $postFields = json_encode(
+            array(
+                array(
+                    "target" => sanitize_text_field($params['t']),
+                    "location_code" => sanitize_text_field($params['loc']),
+                    "language_code" => sanitize_text_field($params['lang']),
+                    "historical_serp_mode" => sanitize_text_field($params['hsm']),
+                    "ignore_synonyms" => false,
+                    "load_rank_absolute" => false,
+                    "limit" => 1000,
+                    "offset" => $offset
+                )
+            )
+        );
+
+        $apiUrl = $useCredits ? 'https://api.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live' : 'https://sandbox.dataforseo.com/v3/dataforseo_labs/google/ranked_keywords/live';
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $apiUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => $postFields,
+                CURLOPT_HTTPHEADER => array(
+                    "Authorization: Basic " . base64_encode($username . ":" . $password),
+                    "Content-Type: application/json"
+                ),
+            )
+        );
+
+        return $curl;
     }
 
     // public function ranked_keywords_test($params)
@@ -1283,9 +1493,10 @@ class LW_Enhancements_REST_API
         $id = $request->get_param('id');
         // $page_number = $request->get_param('page') ?: 1;
 
-        error_log('id: ' . $id);
 
         if ($id) {
+            error_log('used id: ' . $id);
+
             $ourQuery = $wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %s AND id = %s AND request_type = %s", array($user_id, $id, $request_type));
             $results = $wpdb->get_results($ourQuery);
 
