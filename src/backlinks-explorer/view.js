@@ -189,9 +189,6 @@ function BacklinksExplorer() {
 				return;
 			} else {
 				const data = response.data;
-				console.log(response);
-
-				console.log(data);
 
 				if (!data || !data.items || data.items.length === 0) {
 					setError(
