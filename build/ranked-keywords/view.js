@@ -13057,7 +13057,7 @@ function RankedKeywords() {
         setLoading(false);
         return;
       }
-      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v1/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`, {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_5__["default"].get(`${site_url.root_url}/wp-json/localwiz-enhancements/v2/ranked-keywords?t=${formData.target}&loc=${location}&hsm=${historicalSerpMode}&lang=${language}`, {
         headers: {
           "X-WP-Nonce": site_url.nonce
         }
@@ -13068,12 +13068,12 @@ function RankedKeywords() {
         return;
       } else {
         const data = response.data;
-        if (data.tasks[0].result === null) {
+        if (!data || !data.items || data.items.length === 0) {
           setError("Task executed successfully but no data was found, please check target URL and try again.");
           setLoading(false);
           return;
         }
-        const items = data.tasks[0].result[0].items;
+        const items = data.items;
         let firstInstance = true;
         if (!items || items.length === 0) {
           setError("Task executed successfully but no data was found, please check target URL and try again.");
@@ -13120,14 +13120,9 @@ function RankedKeywords() {
             setError("Error uploading file:", error.response.data);
           });
         };
-        setTime(parseFloat(data.time));
+        setTime(parseFloat(data.execution_time).toFixed(4));
       }
     } catch (e) {
-      if (e.response.data.code === "balance_error") {
-        setError("Insufficient credits to complete this task.");
-        setLoading(false);
-        return;
-      }
       setError(`Unable to fetch data: ${e.message}`);
       console.log(e);
       setLoading(false);
@@ -13141,6 +13136,7 @@ function RankedKeywords() {
   }
   function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
     getResults({
       formData,
       location,
